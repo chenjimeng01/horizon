@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planning Intake · Chenji Meng</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f5f7; --surface: #fff; --border: #e3e8ee; --border-mid: #cbd5e1;
+    --text: #131f30; --sub: #3d4c63; --mute: #7b8a9e; --label: #66788f;
+    --navy: #1c3252; --accent: #2a78d6; --green: #0f7b3f; --red: #b23434;
+    --amber: #8a5a00; --amber-bg: #fdf4dc; --divider: #eceff3;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'IBM Plex Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.6; padding: 32px 16px 64px; }
+  .wrap { max-width: 780px; margin: 0 auto; }
+  h1 { font-family: 'IBM Plex Serif', Georgia, serif; font-size: 26px; letter-spacing: -0.3px; margin: 6px 0 2px; }
+  .masthead { display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
+  .cm { width: 24px; height: 24px; border-radius: 6px; background: var(--navy); color: #fff; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .mh { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .lede { color: var(--sub); font-size: 13px; margin: 6px 0 22px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.06); margin-bottom: 16px; }
+  .card > .hd { padding: 11px 18px; border-bottom: 1px solid var(--divider); }
+  .card > .hd .t { font-size: 10.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--label); }
+  .card > .hd .s { font-size: 11px; color: var(--mute); margin-top: 1px; }
+  .card > .bd { padding: 14px 18px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 620px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+  label.f { display: block; }
+  label.f .l { font-size: 10px; font-weight: 600; color: var(--label); margin-bottom: 3px; display: block; }
+  input[type=text], input[type=number], input[type=email], select, textarea {
+    width: 100%; padding: 7px 10px; border: 1px solid var(--border-mid); border-radius: 7px;
+    font: inherit; font-size: 13px; color: var(--text); background: #fff; }
+  textarea { min-height: 70px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .goal { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+  .goal:hover { border-color: var(--accent); }
+  .goal input { margin-top: 3px; }
+  .goal b { font-size: 13px; }
+  .goal .d { font-size: 11.5px; color: var(--sub); }
+  .rowtable { width: 100%; border-collapse: collapse; }
+  .rowtable th { text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--sub); padding: 4px 6px; border-bottom: 1px solid var(--border-mid); }
+  .rowtable td { padding: 4px 4px; }
+  .rowtable input, .rowtable select { font-size: 12.5px; padding: 6px 8px; }
+  .btn { border: 1px solid var(--border); background: var(--surface); color: var(--sub); border-radius: 7px;
+    font: inherit; font-size: 12px; font-weight: 600; padding: 6px 14px; cursor: pointer; }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-size: 13.5px; padding: 10px 22px; }
+  .btn.danger { color: var(--red); border-color: var(--red); padding: 4px 9px; }
+  .note { font-size: 11px; color: var(--mute); line-height: 1.55; }
+  .scope { border-left: 3px solid var(--amber); background: var(--amber-bg); border-radius: 0 8px 8px 0;
+    padding: 12px 16px; font-size: 12px; color: var(--sub); margin-bottom: 16px; }
+  .scope b { color: var(--text); }
+  .consent { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; font-size: 12.5px; color: var(--sub); }
+  .consent input { margin-top: 3px; }
+  .hidden { display: none; }
+  details.privacy { font-size: 12px; color: var(--sub); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; }
+  details.privacy summary { font-weight: 600; cursor: pointer; color: var(--text); }
+  details.privacy h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--label); margin: 10px 0 2px; }
+  .done { border-left: 3px solid var(--green); background: #e9f5ee; border-radius: 0 8px 8px 0; padding: 14px 16px; }
+  .err { color: var(--red); font-size: 12px; margin-top: 8px; font-weight: 600; }
+  .foot { font-size: 10px; color: var(--mute); margin-top: 26px; border-top: 1px solid var(--divider); padding-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead"><span class="cm">CM</span><span class="mh">Chenji Meng · Private Wealth Planning</span></div>
+  <h1>Planning intake</h1>
+  <p class="lede">This form gathers what is needed to build your personal cashflow and tax models.
+  It runs entirely in your browser: <b>nothing is sent or stored anywhere</b>. At the end it
+  produces a single file that you download and send to us yourself, through whichever secure
+  channel we have agreed.</p>
+
+  <div class="scope">
+    <b>What this service is, and what it is not.</b> We prepare lifetime cashflow modelling and
+    investment tax-drag modelling: planning illustrations built at the level of account types
+    (pension, ISA, general account, bonds, property) and asset classes. This is not regulated
+    financial advice. We do not recommend, review or arrange specific investments, funds or
+    products; we do not advise on pension transfers; and nothing we produce is a personal
+    recommendation to buy or sell any investment. That is why this form deliberately does not ask
+    for provider names, fund names, policy or account numbers. If your goals need regulated advice,
+    we will say so plainly and you can seek it separately.
+  </div>
+
+  <details class="privacy">
+    <summary>Privacy notice (please read before completing)</summary>
+    <h4>Who is responsible for your data</h4>
+    <p>Chenji Meng is the data controller for information you choose to send after completing this
+    form. Contact for all data matters: the email address on your engagement letter.</p>
+    <h4>What we collect and why</h4>
+    <p>Names, dates of birth, contact email, and financial information at account-type level:
+    the minimum needed to prepare the modelling you are asking for. The purpose is preparing your
+    planning illustrations; the lawful basis is taking steps at your request to enter into a
+    contract (UK GDPR Article 6(1)(b)). We do not collect health information, National Insurance
+    numbers, account numbers or identification documents through this form, and ask you not to
+    include them in free-text answers.</p>
+    <h4>How it is handled</h4>
+    <p>This page stores nothing and transmits nothing. Data reaches us only when you send the
+    generated file yourself. Once received, it is held on encrypted devices, used solely to
+    prepare your reports, never sold or shared with third parties, and not used for automated
+    decision-making. Fictional or anonymised versions may never be created from your data without
+    your written agreement.</p>
+    <h4>Retention and your rights</h4>
+    <p>We keep engagement records for six years after the engagement ends, in line with standard
+    financial record-keeping practice, then delete them. You may ask at any time for a copy of
+    your data, for corrections, or for deletion (which we will honour except where retention is
+    legally required). You may complain to the Information Commissioner's Office (ico.org.uk) if
+    you are unhappy with how your data is handled.</p>
+  </details>
+
+  <form id="f" novalidate>
+
+  <div class="card">
+    <div class="hd"><div class="t">1 · What do you want to explore?</div>
+      <div class="s">Choose everything that applies. The rest of the form adapts to your choices.</div></div>
+    <div class="bd" id="goals">
+      <label class="goal"><input type="checkbox" name="goal" value="sustainability">
+        <span><b>Will my money last?</b><div class="d">Lifetime cashflow projection: can we fund our intended spending for life, and with how much margin.</div></span></label>
+      <label class="goal"><input type="checkbox" name="goal" value="fi_target">
+        <span><b>Financial independence target</b><div class="d">When could work become optional, and what would it take to bring that date forward.</div></span></label>
+      <label class="goal"><input type="checkbox" name="goal" value="structure">
+        <span><b>Best structure for my investments</b><div class="d">Tax-drag comparison across account types and withdrawal strategies: where each pound is taxed least over time.</div></span></label>
+      <label class="goal"><input type="checkbox" name="goal" value="validation">
+        <span><b>Validate a plan I already have</b><div class="d">You have your own model or adviser proposal; we independently rebuild and stress-test it.</div></span></label>
+      <label class="goal"><input type="checkbox" name="goal" value="abroad">
+        <span><b>Moving abroad, or coming back</b><div class="d">The financial effect of years outside the UK, including the five-year rule on returning.</div></span></label>
+      <label class="goal"><input type="checkbox" name="goal" value="decumulation">
+        <span><b>How to draw my money in retirement</b><div class="d">Comparing withdrawal orders, pension timing, and annuity options in pounds over your lifetime.</div></span></label>
+      <label class="f" style="margin-top:8px"><span class="l">In your own words, what does success look like?</span>
+        <textarea name="successText" placeholder="For example: retire at 60 on 4,000 a month, help each child with a deposit, never worry about a market crash"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">2 · About you</div><div class="s">Couples are modelled per person; complete both columns if joint.</div></div>
+    <div class="bd">
+      <div class="grid2">
+        <div>
+          <label class="f"><span class="l">Your first name</span><input type="text" name="c1name" required></label>
+          <label class="f" style="margin-top:8px"><span class="l">Year of birth</span><input type="number" name="c1birth" min="1930" max="2010" required></label>
+          <label class="f" style="margin-top:8px"><span class="l">Income tax country</span>
+            <select name="c1country"><option value="ruk">England / Wales / NI</option><option value="scotland">Scotland</option></select></label>
+        </div>
+        <div>
+          <label class="f"><span class="l">Partner's first name (blank if none)</span><input type="text" name="c2name"></label>
+          <label class="f" style="margin-top:8px"><span class="l">Partner's year of birth</span><input type="number" name="c2birth" min="1930" max="2010"></label>
+          <label class="f" style="margin-top:8px"><span class="l">Partner's income tax country</span>
+            <select name="c2country"><option value="ruk">England / Wales / NI</option><option value="scotland">Scotland</option></select></label>
+        </div>
+      </div>
+      <div class="grid2" style="margin-top:10px">
+        <label class="f"><span class="l">Contact email</span><input type="email" name="email" required></label>
+        <label class="f"><span class="l">Model to what age? (default 100)</span><input type="number" name="endAge" placeholder="100" min="70" max="110"></label>
+      </div>
+      <p class="note" style="margin-top:8px">State pensions: if you have BR19 forecasts, note the weekly amounts in section 7; otherwise we model the full new state pension and flag it as an assumption.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">3 · Income</div><div class="s">Gross annual figures. Leave blank whatever does not apply.</div></div>
+    <div class="bd">
+      <div class="grid3">
+        <label class="f"><span class="l">Your employment income (gross)</span><input type="number" name="c1salary" min="0" step="1000"></label>
+        <label class="f"><span class="l">Typical bonus, if any</span><input type="number" name="c1bonus" min="0" step="1000"></label>
+        <label class="f"><span class="l">Intended retirement age</span><input type="number" name="c1retire" min="40" max="80"></label>
+        <label class="f"><span class="l">Partner's employment income</span><input type="number" name="c2salary" min="0" step="1000"></label>
+        <label class="f"><span class="l">Partner's bonus</span><input type="number" name="c2bonus" min="0" step="1000"></label>
+        <label class="f"><span class="l">Partner's retirement age</span><input type="number" name="c2retire" min="40" max="80"></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">Other income (rent, defined benefit pensions in payment or due, self-employment): amount, who, and when it starts or stops</span>
+        <textarea name="otherIncome" placeholder="For example: rental 12,000 a year joint; my DB pension 8,500 a year from age 65"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">4 · Spending</div><div class="s">Rough annual figures are fine; we refine together.</div></div>
+    <div class="bd">
+      <div class="grid2">
+        <label class="f"><span class="l">Current household spending (per year, after tax)</span><input type="number" name="spendNow" min="0" step="1000"></label>
+        <label class="f"><span class="l">Intended retirement spending (per year, today's money)</span><input type="number" name="spendRetire" min="0" step="1000"></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">One-off costs or gifts you expect (what, roughly when, how much)</span>
+        <textarea name="oneOffs" placeholder="For example: help children with deposits 50,000 each around 2030; new kitchen 40,000 in 2027"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">5 · What you own</div>
+      <div class="s">By account type only. Please do not enter provider names, fund names or account numbers.</div></div>
+    <div class="bd">
+      <table class="rowtable" id="assets">
+        <thead><tr><th style="width:34%">Type</th><th style="width:22%">Whose</th><th>Current value</th><th>Adding per year</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="btn" id="addAsset" style="margin-top:8px">+ Add a row</button>
+      <label class="f" style="margin-top:10px"><span class="l">Anything that does not fit the table (business interests, inheritance expected, overseas assets, investment bonds, family investment company)</span>
+        <textarea name="assetNotes"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">6 · What you owe</div><div class="s">Mortgages and loans.</div></div>
+    <div class="bd">
+      <label class="f"><span class="l">Debts: type, balance, rate, and when repaid (blank if none)</span>
+        <textarea name="debts" placeholder="For example: mortgage 180,000 at 4.1 percent, repaid 2032"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">7 · Pensions detail</div><div class="s">Still no provider names needed.</div></div>
+    <div class="bd">
+      <div class="grid2">
+        <label class="f"><span class="l">Your state pension forecast (weekly, if known)</span><input type="number" name="c1sp" step="0.01" placeholder="241.30 if full"></label>
+        <label class="f"><span class="l">Partner's state pension forecast (weekly)</span><input type="number" name="c2sp" step="0.01"></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">Anything unusual: missing NI years, protections, lifetime allowance history, old workplace schemes you have lost track of</span>
+        <textarea name="pensionNotes"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card hidden" id="sec-abroad">
+    <div class="hd"><div class="t">8 · Years abroad</div><div class="s">Because you selected the moving-abroad goal.</div></div>
+    <div class="bd">
+      <div class="grid3">
+        <label class="f"><span class="l">Destination country (or shortlist)</span><input type="text" name="abroadWhere"></label>
+        <label class="f"><span class="l">Likely departure year</span><input type="number" name="abroadYear" min="2026" max="2060"></label>
+        <label class="f"><span class="l">Return to the UK?</span>
+          <select name="abroadReturn"><option value="unsure">Not sure</option><option value="yes">Yes, eventually</option><option value="no">No, permanent</option></select></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">What is driving the move, and what would bring you back?</span>
+        <textarea name="abroadNotes"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card hidden" id="sec-fi">
+    <div class="hd"><div class="t">8 · Financial independence</div><div class="s">Because you selected the FI goal.</div></div>
+    <div class="bd">
+      <div class="grid2">
+        <label class="f"><span class="l">Annual income that would make work optional (today's money)</span><input type="number" name="fiIncome" step="1000"></label>
+        <label class="f"><span class="l">Ideal age to reach it</span><input type="number" name="fiAge" min="35" max="75"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="sec-validation">
+    <div class="hd"><div class="t">8 · Your existing plan</div><div class="s">Because you asked for validation.</div></div>
+    <div class="bd">
+      <label class="f"><span class="l">Describe the plan and the specific claims you want independently checked. You can send your own documents alongside this form.</span>
+        <textarea name="validationNotes" placeholder="For example: my spreadsheet says 60,000 a year lasts to age 95 at 3 percent real returns; my adviser proposes X; is the tax figure of Y right"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">9 · Modelling preferences</div><div class="s">These set model parameters; they are not a regulated risk assessment.</div></div>
+    <div class="bd">
+      <div class="grid2">
+        <label class="f"><span class="l">Which return assumption should we centre on?</span>
+          <select name="returns">
+            <option value="cautious">Cautious (about 2 percent above inflation)</option>
+            <option value="balanced" selected>Balanced (about 3 percent above inflation)</option>
+            <option value="growth">Growth-tilted (about 4 percent above inflation)</option>
+          </select></label>
+        <label class="f"><span class="l">Stress testing</span>
+          <select name="stress">
+            <option value="standard" selected>Standard (poor-returns case plus 1,000-run simulation)</option>
+            <option value="heavy">Heavy (add deeper drawdown and spending-shock cases)</option>
+          </select></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">Anything else we should know</span><textarea name="anythingElse"></textarea></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hd"><div class="t">10 · Consent</div></div>
+    <div class="bd">
+      <label class="consent"><input type="checkbox" id="cPrivacy" required>
+        <span>I have read the privacy notice above and ask Chenji Meng to use the information in this
+        form to prepare planning illustrations for me. I understand nothing is transmitted until I
+        send the downloaded file myself.</span></label>
+      <label class="consent"><input type="checkbox" id="cScope" required>
+        <span>I understand this service is cashflow and tax modelling only: it is not regulated
+        financial advice and contains no recommendations on specific investments, funds, products
+        or pension transfers.</span></label>
+      <label class="consent"><input type="checkbox" id="cContact">
+        <span>Optional: you may contact me about future planning services. (You can withdraw this
+        at any time.)</span></label>
+      <div class="err hidden" id="err"></div>
+      <div style="margin-top:14px; display:flex; gap:10px; align-items:center">
+        <button type="submit" class="btn primary">Create my intake file</button>
+        <span class="note">Creates a small file on your device. Nothing leaves this page.</span>
+      </div>
+      <div class="done hidden" id="done" style="margin-top:14px">
+        <b>Your file is ready.</b> It has downloaded as <span id="fname" style="font-family:monospace"></span>.
+        Please send it through the secure channel we agreed (not ordinary unencrypted email if it
+        can be avoided). If anything changes before your report is produced, just complete the form
+        again and send the new file.
+      </div>
+    </div>
+  </div>
+
+  </form>
+
+  <div class="foot">© <span id="yr"></span> Chenji Meng. All rights reserved · Proprietary planning tools ·
+  This page stores and transmits nothing; it produces a file on your device only. Intake schema v1.</div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Goal-driven sections.
+const goalSections = { abroad: 'sec-abroad', fi_target: 'sec-fi', validation: 'sec-validation' };
+document.getElementById('goals').addEventListener('change', () => {
+  const chosen = [...document.querySelectorAll('input[name=goal]:checked')].map(x => x.value);
+  for (const [goal, id] of Object.entries(goalSections)) {
+    document.getElementById(id).classList.toggle('hidden', !chosen.includes(goal));
+  }
+});
+
+// Asset rows.
+const ASSET_TYPES = [
+  ['cash', 'Cash and savings'], ['nsi', 'NS&I (Premium Bonds, certificates)'],
+  ['isa', 'Stocks & shares ISA'], ['gia', 'General investment account'],
+  ['pension', 'Pension (workplace, SIPP)'], ['onshore_bond', 'Investment bond (UK)'],
+  ['offshore_bond', 'Investment bond (offshore)'], ['property_home', 'Home'],
+  ['property_other', 'Other property'], ['other', 'Other'],
+];
+const tbody = document.querySelector('#assets tbody');
+function addRow(type) {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select data-k="type">${ASSET_TYPES.map(([v, l]) => `<option value="${v}"${v === type ? ' selected' : ''}>${l}</option>`).join('')}</select></td>
+    <td><select data-k="owner"><option value="c1">Me</option><option value="c2">Partner</option><option value="joint">Joint</option></select></td>
+    <td><input type="number" data-k="value" min="0" step="1000" placeholder="0"></td>
+    <td><input type="number" data-k="contrib" min="0" step="500" placeholder="0"></td>
+    <td><button type="button" class="btn danger" title="Remove">×</button></td>`;
+  tr.querySelector('.danger').onclick = () => tr.remove();
+  tbody.appendChild(tr);
+}
+['cash', 'isa', 'pension'].forEach(addRow);
+document.getElementById('addAsset').onclick = () => addRow('gia');
+
+// Build + download the intake JSON. Client-side only by design.
+document.getElementById('f').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = document.getElementById('err');
+  err.classList.add('hidden');
+  const v = name => document.querySelector(`[name=${name}]`)?.value?.trim() ?? '';
+  const num = name => { const x = v(name); return x === '' ? null : Number(x); };
+  const goals = [...document.querySelectorAll('input[name=goal]:checked')].map(x => x.value);
+
+  const problems = [];
+  if (!goals.length) problems.push('choose at least one goal in section 1');
+  if (!v('c1name')) problems.push('your first name');
+  if (!num('c1birth')) problems.push('your year of birth');
+  if (!v('email')) problems.push('a contact email');
+  if (!document.getElementById('cPrivacy').checked || !document.getElementById('cScope').checked)
+    problems.push('both required consent boxes');
+  if (problems.length) {
+    err.textContent = 'Still needed: ' + problems.join('; ') + '.';
+    err.classList.remove('hidden');
+    err.scrollIntoView({ block: 'center' });
+    return;
+  }
+
+  const assets = [...tbody.querySelectorAll('tr')].map(tr => {
+    const g = k => tr.querySelector(`[data-k=${k}]`).value;
+    return { type: g('type'), owner: g('owner'), value: Number(g('value') || 0), contribPerYear: Number(g('contrib') || 0) };
+  }).filter(a => a.value > 0 || a.contribPerYear > 0);
+
+  const intake = {
+    intakeVersion: 1,
+    createdAt: new Date().toISOString(),
+    goals,
+    successText: v('successText'),
+    clients: [
+      { name: v('c1name'), birthYear: num('c1birth'), taxCountry: v('c1country'),
+        salary: num('c1salary'), bonus: num('c1bonus'), retireAge: num('c1retire'), statePensionWeekly: num('c1sp') },
+      ...(v('c2name') ? [{ name: v('c2name'), birthYear: num('c2birth'), taxCountry: v('c2country'),
+        salary: num('c2salary'), bonus: num('c2bonus'), retireAge: num('c2retire'), statePensionWeekly: num('c2sp') }] : []),
+    ],
+    email: v('email'),
+    endAge: num('endAge') ?? 100,
+    otherIncome: v('otherIncome'),
+    spending: { now: num('spendNow'), retirement: num('spendRetire'), oneOffs: v('oneOffs') },
+    assets,
+    assetNotes: v('assetNotes'),
+    debts: v('debts'),
+    pensionNotes: v('pensionNotes'),
+    abroad: goals.includes('abroad') ? { where: v('abroadWhere'), year: num('abroadYear'), returnIntent: v('abroadReturn'), notes: v('abroadNotes') } : null,
+    fi: goals.includes('fi_target') ? { income: num('fiIncome'), age: num('fiAge') } : null,
+    validation: goals.includes('validation') ? { notes: v('validationNotes') } : null,
+    preferences: { returns: v('returns'), stress: v('stress') },
+    anythingElse: v('anythingElse'),
+    consent: {
+      privacyNotice: true, scopeAcknowledged: true,
+      futureContact: document.getElementById('cContact').checked,
+      at: new Date().toISOString(),
+    },
+  };
+
+  const slug = v('c1name').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const fname = `intake-${slug}-${new Date().toISOString().slice(0, 10)}.json`;
+  const blob = new Blob([JSON.stringify(intake, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fname;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  document.getElementById('fname').textContent = fname;
+  document.getElementById('done').classList.remove('hidden');
+  document.getElementById('done').scrollIntoView({ block: 'center' });
+});
+</script>
+</body>
+</html>
