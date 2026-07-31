@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Lifetime cashflow report · James &amp; Elena Whitmore</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'IBM Plex Sans', -apple-system, sans-serif; color: #131f30; background: #fff;
+    font-size: 12.5px; line-height: 1.6; max-width: 820px; margin: 0 auto; padding: 40px 30px; }
+  h1 { font-family: 'IBM Plex Serif', Georgia, serif; font-size: 27px; letter-spacing: -0.3px; margin: 6px 0 2px; }
+  h2 { font-size: 17px; margin: 0 0 10px; padding-bottom: 6px; border-bottom: 2px solid #1c3252; }
+  h3 { font-size: 13px; margin: 16px 0 6px; color: #1c3252; }
+  h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #66788f; margin: 10px 0 3px; }
+  section { margin-bottom: 34px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.7px; color: #3d4c63;
+    border-bottom: 1px solid #cbd5e1; padding: 5px 8px; }
+  td { padding: 4.5px 8px; border-bottom: 1px solid #eceff3; font-size: 11.5px; }
+  th.num, td.num { text-align: right; }
+  .baserow td { font-weight: 600; }
+  .mini td { padding: 2.5px 6px; font-size: 11px; border-bottom: 1px solid #eceff3; }
+  .sub { color: #7b8a9e; font-size: 10px; }
+  .tick { font-size: 9px; fill: #7b8a9e; font-family: 'IBM Plex Sans', sans-serif; }
+  .lbl { font-size: 10px; font-weight: 600; font-family: 'IBM Plex Sans', sans-serif; }
+  .caption { font-size: 10px; color: #7b8a9e; margin: 2px 0 8px; }
+  .legend { margin: 4px 0 8px; } .key { font-size: 10px; color: #3d4c63; margin-right: 12px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: baseline; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+  .tile { border: 1px solid #e3e8ee; border-radius: 8px; padding: 9px 12px; }
+  .tl { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #66788f; }
+  .tv { font-size: 19px; font-weight: 700; color: #1c3252; font-variant-numeric: tabular-nums; }
+  .ts { font-size: 9.5px; color: #7b8a9e; }
+  .narrative { margin: 8px 0 12px; }
+  .narrative.auto { border-left: 3px solid #8a5a00; background: #fdf4dc; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+  .autotag { display: block; font-size: 8.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #8a5a00; margin-bottom: 3px; }
+  .warn { border: 1px solid #e3e8ee; border-left: 3px solid #8a5a00; border-radius: 6px; padding: 8px 12px; margin: 8px 0; font-size: 11px; }
+  .warn.red { border-left-color: #b23434; }
+  .wtag { font-size: 8.5px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #8a5a00; margin-bottom: 2px; }
+  .warn.red .wtag { color: #b23434; }
+  .drill { border: 1px solid #e3e8ee; border-radius: 8px; padding: 10px 14px; margin: 10px 0; page-break-inside: avoid; }
+  .nw { font-size: 11px; margin-top: 6px; color: #3d4c63; }
+  .pill { font-size: 8.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; padding: 1px 7px; border-radius: 4px; }
+  .pill.ok { color: #0f7b3f; background: #e9f5ee; } .pill.warn { color: #8a5a00; background: #fdf4dc; }
+  .masthead { display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
+  .cm { width: 24px; height: 24px; border-radius: 6px; background: #1c3252; color: #fff; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .mh { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #66788f; }
+  .basis { font-size: 9.5px; color: #7b8a9e; margin-top: 4px; }
+  .foot { font-size: 9.5px; color: #7b8a9e; border-top: 1px solid #eceff3; padding-top: 10px; margin-top: 26px; }
+  svg { width: 100%; height: auto; }
+  @media print {
+    body { padding: 0; font-size: 11.5px; }
+    .page { page-break-before: always; }
+    .narrative.auto { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { margin: 18mm 14mm; }
+  }
+</style></head><body>
+
+
+<header>
+  <div class="masthead"><span class="cm">CM</span><span class="mh">Chenji Meng · Lifetime Cashflow and Tax Modelling</span></div>
+  <h1>Lifetime cashflow report</h1>
+  <div style="font-size:14px;color:#3d4c63">Prepared for James &amp; Elena Whitmore · 2026-07-31</div>
+  <div class="basis">Horizon engine v0.9.6 · UK rates basis 2026/27 (reviewed 2026-07-30, Autumn Budget 2025 (enacted); Scottish Budget 2026/27) · scenario fb7a69575c40 · variants 8c5e88906e1b, d294ae1faf51 · every figure reproducible from the stamped inputs</div>
+</header>
+
+<div style="background:#f4f6f9;border:1px solid #cbd5e1;border-left:4px solid #1c3252;padding:8px 16px;font-size:11px;color:#3d4c63;margin:10px 0">
+<b>Status:</b> unregulated lifetime cashflow and tax modelling prepared by Chenji Meng, who is not authorised
+or regulated by the Financial Conduct Authority in this capacity. This work is not covered by the Financial
+Ombudsman Service or the Financial Services Compensation Scheme, no suitability assessment has been performed,
+and nothing here is a personal recommendation. Full basis and complaints route: Important information, Appendix A.
+</div>
+<section>
+  <h2>Executive summary</h2>
+  <div class="narrative">James and Elena Whitmore, both 40 and 38, have two children aged 7 and 5. James earns 500,000 a year; the household holds about 5m of net worth (a 2m home with a 1m mortgage, and 4m of investments and cash) and enjoys a high-cost lifestyle. The goal explored here is early retirement for James at around 50, while funding private school and university for both children. The central finding is that the retirement date is not the binding constraint: the lifestyle is. On the current level of spending (about 310,000 a year of core and discretionary costs, before school fees and the mortgage), the model exhausts the investment portfolio in James's early 60s whether he stops work at 50 or keeps working to 60. When spending is moderated to about 160,000 a year of core and discretionary, retirement at 50 is fully funded to the end of the plan and still leaves a substantial estate to the children. The three modelled paths below set out those trade-offs. Nothing in this report is a personal recommendation.</div>
+  
+<div class="tiles" style="grid-template-columns: repeat(6, 1fr)">
+  <div class="tile"><div class="tl">Terminal net worth</div><div class="tv">£11.78m</div><div class="ts">£3.59m in today's money</div></div>
+  <div class="tile"><div class="tl">Security floor</div><div class="tv" style="color:#b23434">1 yrs</div><div class="ts">baseline funded to 2026 without growth assets</div></div>
+  <div class="tile"><div class="tl">Net to heirs</div><div class="tv">£7.84m</div><div class="ts">after £3.94m IHT at second death</div></div>
+  <div class="tile"><div class="tl">Lifetime tax</div><div class="tv">£4.72m</div><div class="ts">UK £4.72m · foreign £0k</div></div>
+  <div class="tile"><div class="tl">Funding</div><div class="tv" style="color:#b23434">40 gap yrs</div><div class="ts">First gap at age 60</div></div>
+  <div class="tile"><div class="tl">Plan horizon</div><div class="tv">60 yrs</div><div class="ts">2026 to 2085, to ages 95 and 97</div></div>
+</div>
+  <p class="sub" style="font-size:10px">Projections are modelling illustrations, not guarantees; values can fall as well as rise. Nominal figures are pounds of the year shown; today's money figures are deflated to 2026.</p>
+</section>
+
+<section>
+  <h2>Your situation as modelled</h2>
+  <div class="narrative">The household's net worth is about 5m: a 2m main residence with a 1m repayment mortgage at 4.5% running to 2046, and about 4m of investments and cash (a 2m general investment account, a 300,000 ISA, a 1m pension, and 700,000 of cash). James earns 500,000 a year, which is roughly 275,000 after tax. Core and discretionary spending is around 310,000 a year, before school fees of about 100,000 while both children are in school and mortgage payments of about 75,000. Spending at this level is close to or above net earnings, so the household draws on capital even during James's working years. School and university fees are modelled to rise with earnings, faster than general prices.</div>
+  <svg viewBox="0 0 760 280" role="img"><line x1="64" y1="250" x2="630" y2="250" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="253" text-anchor="end" class="tick">£0k</text><line x1="64" y1="154.6261667826631" x2="630" y2="154.6261667826631" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="157.6261667826631" text-anchor="end" class="tick">£5.00m</text><line x1="64" y1="59.25233356532616" x2="630" y2="59.25233356532616" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="62.25233356532616" text-anchor="end" class="tick">£10.00m</text><text x="64" y="272" text-anchor="middle" class="tick">2026</text><text x="131.15254237288136" y="272" text-anchor="middle" class="tick">2033</text><text x="198.3050847457627" y="272" text-anchor="middle" class="tick">2040</text><text x="265.45762711864404" y="272" text-anchor="middle" class="tick">2047</text><text x="332.6101694915254" y="272" text-anchor="middle" class="tick">2054</text><text x="399.76271186440675" y="272" text-anchor="middle" class="tick">2061</text><text x="466.91525423728814" y="272" text-anchor="middle" class="tick">2068</text><text x="534.0677966101696" y="272" text-anchor="middle" class="tick">2075</text><text x="601.2203389830509" y="272" text-anchor="middle" class="tick">2082</text><polygon points="64.0,236.6 73.6,239.6 83.2,242.7 92.8,245.8 102.4,248.9 112.0,250.0 121.6,250.0 131.2,250.0 140.7,250.0 150.3,250.0 159.9,250.0 169.5,250.0 179.1,250.0 188.7,250.0 198.3,250.0 207.9,250.0 217.5,250.0 227.1,250.0 236.7,250.0 246.3,250.0 255.9,250.0 265.5,250.0 275.1,250.0 284.6,250.0 294.2,250.0 303.8,250.0 313.4,250.0 323.0,250.0 332.6,250.0 342.2,250.0 351.8,250.0 361.4,250.0 371.0,250.0 380.6,250.0 390.2,250.0 399.8,250.0 409.4,250.0 418.9,250.0 428.5,250.0 438.1,250.0 447.7,250.0 457.3,250.0 466.9,250.0 476.5,250.0 486.1,250.0 495.7,250.0 505.3,250.0 514.9,250.0 524.5,250.0 534.1,250.0 543.7,250.0 553.3,250.0 562.8,250.0 572.4,250.0 582.0,250.0 591.6,250.0 601.2,250.0 610.8,250.0 620.4,250.0 630.0,250.0 630.0,250.0 620.4,250.0 610.8,250.0 601.2,250.0 591.6,250.0 582.0,250.0 572.4,250.0 562.8,250.0 553.3,250.0 543.7,250.0 534.1,250.0 524.5,250.0 514.9,250.0 505.3,250.0 495.7,250.0 486.1,250.0 476.5,250.0 466.9,250.0 457.3,250.0 447.7,250.0 438.1,250.0 428.5,250.0 418.9,250.0 409.4,250.0 399.8,250.0 390.2,250.0 380.6,250.0 371.0,250.0 361.4,250.0 351.8,250.0 342.2,250.0 332.6,250.0 323.0,250.0 313.4,250.0 303.8,250.0 294.2,250.0 284.6,250.0 275.1,250.0 265.5,250.0 255.9,250.0 246.3,250.0 236.7,250.0 227.1,250.0 217.5,250.0 207.9,250.0 198.3,250.0 188.7,250.0 179.1,250.0 169.5,250.0 159.9,250.0 150.3,250.0 140.7,250.0 131.2,250.0 121.6,250.0 112.0,250.0 102.4,250.0 92.8,250.0 83.2,250.0 73.6,250.0 64.0,250.0" fill="#2a78d6" fill-opacity="0.85" stroke="#fff" stroke-width="0.6"/><polygon points="64.0,181.1 73.6,182.2 83.2,183.2 92.8,184.2 102.4,185.2 112.0,186.4 121.6,187.8 131.2,189.2 140.7,190.8 150.3,192.4 159.9,194.1 169.5,204.4 179.1,214.9 188.7,226.3 198.3,237.8 207.9,249.2 217.5,250.0 227.1,250.0 236.7,250.0 246.3,250.0 255.9,250.0 265.5,250.0 275.1,250.0 284.6,250.0 294.2,250.0 303.8,250.0 313.4,250.0 323.0,250.0 332.6,250.0 342.2,250.0 351.8,250.0 361.4,250.0 371.0,250.0 380.6,250.0 390.2,250.0 399.8,250.0 409.4,250.0 418.9,250.0 428.5,250.0 438.1,250.0 447.7,250.0 457.3,250.0 466.9,250.0 476.5,250.0 486.1,250.0 495.7,250.0 505.3,250.0 514.9,250.0 524.5,250.0 534.1,250.0 543.7,250.0 553.3,250.0 562.8,250.0 572.4,250.0 582.0,250.0 591.6,250.0 601.2,250.0 610.8,250.0 620.4,250.0 630.0,250.0 630.0,250.0 620.4,250.0 610.8,250.0 601.2,250.0 591.6,250.0 582.0,250.0 572.4,250.0 562.8,250.0 553.3,250.0 543.7,250.0 534.1,250.0 524.5,250.0 514.9,250.0 505.3,250.0 495.7,250.0 486.1,250.0 476.5,250.0 466.9,250.0 457.3,250.0 447.7,250.0 438.1,250.0 428.5,250.0 418.9,250.0 409.4,250.0 399.8,250.0 390.2,250.0 380.6,250.0 371.0,250.0 361.4,250.0 351.8,250.0 342.2,250.0 332.6,250.0 323.0,250.0 313.4,250.0 303.8,250.0 294.2,250.0 284.6,250.0 275.1,250.0 265.5,250.0 255.9,250.0 246.3,250.0 236.7,250.0 227.1,250.0 217.5,250.0 207.9,250.0 198.3,250.0 188.7,250.0 179.1,250.0 169.5,250.0 159.9,250.0 150.3,250.0 140.7,250.0 131.2,250.0 121.6,250.0 112.0,250.0 102.4,248.9 92.8,245.8 83.2,242.7 73.6,239.6 64.0,236.6" fill="#008300" fill-opacity="0.85" stroke="#fff" stroke-width="0.6"/><polygon points="64.0,174.7 73.6,175.5 83.2,176.2 92.8,176.9 102.4,177.6 112.0,178.4 121.6,179.5 131.2,180.6 140.7,181.7 150.3,182.9 159.9,184.2 169.5,194.1 179.1,204.1 188.7,215.0 198.3,226.0 207.9,236.9 217.5,247.3 227.1,250.0 236.7,250.0 246.3,250.0 255.9,250.0 265.5,250.0 275.1,250.0 284.6,250.0 294.2,250.0 303.8,250.0 313.4,250.0 323.0,250.0 332.6,250.0 342.2,250.0 351.8,250.0 361.4,250.0 371.0,250.0 380.6,250.0 390.2,250.0 399.8,250.0 409.4,250.0 418.9,250.0 428.5,250.0 438.1,250.0 447.7,250.0 457.3,250.0 466.9,250.0 476.5,250.0 486.1,250.0 495.7,250.0 505.3,250.0 514.9,250.0 524.5,250.0 534.1,250.0 543.7,250.0 553.3,250.0 562.8,250.0 572.4,250.0 582.0,250.0 591.6,250.0 601.2,250.0 610.8,250.0 620.4,250.0 630.0,250.0 630.0,250.0 620.4,250.0 610.8,250.0 601.2,250.0 591.6,250.0 582.0,250.0 572.4,250.0 562.8,250.0 553.3,250.0 543.7,250.0 534.1,250.0 524.5,250.0 514.9,250.0 505.3,250.0 495.7,250.0 486.1,250.0 476.5,250.0 466.9,250.0 457.3,250.0 447.7,250.0 438.1,250.0 428.5,250.0 418.9,250.0 409.4,250.0 399.8,250.0 390.2,250.0 380.6,250.0 371.0,250.0 361.4,250.0 351.8,250.0 342.2,250.0 332.6,250.0 323.0,250.0 313.4,250.0 303.8,250.0 294.2,250.0 284.6,250.0 275.1,250.0 265.5,250.0 255.9,250.0 246.3,250.0 236.7,250.0 227.1,250.0 217.5,250.0 207.9,249.2 198.3,237.8 188.7,226.3 179.1,214.9 169.5,204.4 159.9,194.1 150.3,192.4 140.7,190.8 131.2,189.2 121.6,187.8 112.0,186.4 102.4,185.2 92.8,184.2 83.2,183.2 73.6,182.2 64.0,181.1" fill="#e87ba4" fill-opacity="0.85" stroke="#fff" stroke-width="0.6"/><polygon points="64.0,154.8 73.6,154.7 83.2,154.5 92.8,154.2 102.4,153.8 112.0,153.6 121.6,153.5 131.2,153.4 140.7,153.4 150.3,153.3 159.9,153.3 169.5,161.7 179.1,170.3 188.7,179.7 198.3,189.1 207.9,198.3 217.5,206.9 227.1,218.3 236.7,231.9 246.3,246.4 255.9,250.0 265.5,250.0 275.1,250.0 284.6,250.0 294.2,250.0 303.8,250.0 313.4,250.0 323.0,250.0 332.6,250.0 342.2,250.0 351.8,250.0 361.4,250.0 371.0,250.0 380.6,250.0 390.2,250.0 399.8,250.0 409.4,250.0 418.9,250.0 428.5,250.0 438.1,250.0 447.7,250.0 457.3,250.0 466.9,250.0 476.5,250.0 486.1,250.0 495.7,250.0 505.3,250.0 514.9,250.0 524.5,250.0 534.1,250.0 543.7,250.0 553.3,250.0 562.8,250.0 572.4,250.0 582.0,250.0 591.6,250.0 601.2,250.0 610.8,250.0 620.4,250.0 630.0,250.0 630.0,250.0 620.4,250.0 610.8,250.0 601.2,250.0 591.6,250.0 582.0,250.0 572.4,250.0 562.8,250.0 553.3,250.0 543.7,250.0 534.1,250.0 524.5,250.0 514.9,250.0 505.3,250.0 495.7,250.0 486.1,250.0 476.5,250.0 466.9,250.0 457.3,250.0 447.7,250.0 438.1,250.0 428.5,250.0 418.9,250.0 409.4,250.0 399.8,250.0 390.2,250.0 380.6,250.0 371.0,250.0 361.4,250.0 351.8,250.0 342.2,250.0 332.6,250.0 323.0,250.0 313.4,250.0 303.8,250.0 294.2,250.0 284.6,250.0 275.1,250.0 265.5,250.0 255.9,250.0 246.3,250.0 236.7,250.0 227.1,250.0 217.5,247.3 207.9,236.9 198.3,226.0 188.7,215.0 179.1,204.1 169.5,194.1 159.9,184.2 150.3,182.9 140.7,181.7 131.2,180.6 121.6,179.5 112.0,178.4 102.4,177.6 92.8,176.9 83.2,176.2 73.6,175.5 64.0,174.7" fill="#eda100" fill-opacity="0.85" stroke="#fff" stroke-width="0.6"/><polygon points="64.0,115.5 73.6,114.2 83.2,112.8 92.8,111.2 102.4,109.6 112.0,108.0 121.6,106.6 131.2,105.1 140.7,103.6 150.3,102.0 159.9,100.5 169.5,107.3 179.1,114.3 188.7,121.9 198.3,129.7 207.9,137.1 217.5,143.9 227.1,153.4 236.7,165.0 246.3,177.5 255.9,179.0 265.5,176.9 275.1,174.7 284.6,172.4 294.2,170.1 303.8,167.7 313.4,165.3 323.0,162.7 332.6,160.1 342.2,157.4 351.8,154.6 361.4,151.8 371.0,148.8 380.6,145.8 390.2,142.7 399.8,139.4 409.4,136.1 418.9,132.7 428.5,129.2 438.1,125.6 447.7,121.8 457.3,118.0 466.9,114.0 476.5,109.9 486.1,105.7 495.7,101.4 505.3,96.9 514.9,92.4 524.5,87.6 534.1,82.8 543.7,77.7 553.3,72.6 562.8,67.2 572.4,61.8 582.0,56.1 591.6,50.3 601.2,44.3 610.8,38.1 620.4,31.8 630.0,25.2 630.0,250.0 620.4,250.0 610.8,250.0 601.2,250.0 591.6,250.0 582.0,250.0 572.4,250.0 562.8,250.0 553.3,250.0 543.7,250.0 534.1,250.0 524.5,250.0 514.9,250.0 505.3,250.0 495.7,250.0 486.1,250.0 476.5,250.0 466.9,250.0 457.3,250.0 447.7,250.0 438.1,250.0 428.5,250.0 418.9,250.0 409.4,250.0 399.8,250.0 390.2,250.0 380.6,250.0 371.0,250.0 361.4,250.0 351.8,250.0 342.2,250.0 332.6,250.0 323.0,250.0 313.4,250.0 303.8,250.0 294.2,250.0 284.6,250.0 275.1,250.0 265.5,250.0 255.9,250.0 246.3,246.4 236.7,231.9 227.1,218.3 217.5,206.9 207.9,198.3 198.3,189.1 188.7,179.7 179.1,170.3 169.5,161.7 159.9,153.3 150.3,153.3 140.7,153.4 131.2,153.4 121.6,153.5 112.0,153.6 102.4,153.8 92.8,154.2 83.2,154.5 73.6,154.7 64.0,154.8" fill="#4a3aa7" fill-opacity="0.85" stroke="#fff" stroke-width="0.6"/><line x1="64" y1="250" x2="630" y2="250" stroke="#cbd5e1"/></svg><div class="legend"><span class="key"><span class="dot" style="background:#2a78d6"></span>Cash &amp; NS&amp;I</span><span class="key"><span class="dot" style="background:#008300"></span>GIA</span><span class="key"><span class="dot" style="background:#e87ba4"></span>ISA</span><span class="key"><span class="dot" style="background:#eda100"></span>Pension</span><span class="key"><span class="dot" style="background:#4a3aa7"></span>Property</span></div>
+  <div class="caption">Base plan: assets by wrapper (nominal pounds)</div>
+  <svg viewBox="0 0 760 240" role="img"><line x1="64" y1="210" x2="630" y2="210" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="213" text-anchor="end" class="tick">£0k</text><line x1="64" y1="160.75059906368247" x2="630" y2="160.75059906368247" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="163.75059906368247" text-anchor="end" class="tick">£250k</text><line x1="64" y1="111.5011981273649" x2="630" y2="111.5011981273649" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="114.5011981273649" text-anchor="end" class="tick">£500k</text><line x1="64" y1="62.25179719104736" x2="630" y2="62.25179719104736" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="65.25179719104736" text-anchor="end" class="tick">£750k</text><text x="64" y="232" text-anchor="middle" class="tick">2026</text><text x="131.15254237288136" y="232" text-anchor="middle" class="tick">2033</text><text x="198.3050847457627" y="232" text-anchor="middle" class="tick">2040</text><text x="265.45762711864404" y="232" text-anchor="middle" class="tick">2047</text><text x="332.6101694915254" y="232" text-anchor="middle" class="tick">2054</text><text x="399.76271186440675" y="232" text-anchor="middle" class="tick">2061</text><text x="466.91525423728814" y="232" text-anchor="middle" class="tick">2068</text><text x="534.0677966101696" y="232" text-anchor="middle" class="tick">2075</text><text x="601.2203389830509" y="232" text-anchor="middle" class="tick">2082</text><polyline points="64.0,99.5 73.6,92.4 83.2,89.4 92.8,86.2 102.4,82.9 112.0,79.5 121.6,75.8 131.2,71.8 140.7,67.7 150.3,63.5 159.9,59.2 169.5,198.5 179.1,200.6 188.7,202.8 198.3,205.1 207.9,207.5 217.5,209.8 227.1,210.0 236.7,210.0 246.3,210.0 255.9,210.0 265.5,210.0 275.1,210.0 284.6,210.0 294.2,210.0 303.8,210.0 313.4,210.0 323.0,210.0 332.6,203.5 342.2,203.3 351.8,196.1 361.4,195.6 371.0,195.1 380.6,194.6 390.2,194.1 399.8,193.5 409.4,192.9 418.9,192.3 428.5,191.7 438.1,191.1 447.7,190.4 457.3,189.7 466.9,189.0 476.5,188.3 486.1,187.5 495.7,186.8 505.3,185.9 514.9,185.1 524.5,184.2 534.1,183.3 543.7,182.4 553.3,181.4 562.8,180.4 572.4,179.4 582.0,178.3 591.6,177.2 601.2,193.0 610.8,192.4 620.4,191.8 630.0,191.2" fill="none" stroke="#2a78d6" stroke-width="2"/><text x="636" y="194.18515286149673" class="lbl" fill="#2a78d6">Income</text><polyline points="64.0,114.5 73.6,112.6 83.2,110.7 92.8,108.7 102.4,106.6 112.0,104.5 121.6,102.3 131.2,100.1 140.7,97.8 150.3,95.5 159.9,93.1 169.5,90.6 179.1,94.2 188.7,92.0 198.3,96.5 207.9,103.8 217.5,102.0 227.1,109.8 236.7,108.1 246.3,106.3 255.9,104.6 265.5,117.4 275.1,115.6 284.6,113.7 294.2,111.8 303.8,109.8 313.4,107.8 323.0,105.8 332.6,103.7 342.2,101.6 351.8,99.4 361.4,97.2 371.0,94.9 380.6,92.6 390.2,90.3 399.8,87.9 409.4,85.4 418.9,82.9 428.5,80.4 438.1,77.8 447.7,75.2 457.3,72.5 466.9,69.7 476.5,66.9 486.1,64.0 495.7,61.1 505.3,58.1 514.9,55.1 524.5,52.0 534.1,48.8 543.7,45.6 553.3,42.3 562.8,39.0 572.4,35.6 582.0,32.1 591.6,28.5 601.2,80.4 610.8,77.8 620.4,75.2 630.0,72.5" fill="none" stroke="#e87ba4" stroke-width="2"/><text x="636" y="75.49114164091527" class="lbl" fill="#e87ba4">Outgoings</text><polyline points="64.0,162.0 73.6,159.0 83.2,157.3 92.8,155.7 102.4,153.9 112.0,150.4 121.6,147.4 131.2,145.4 140.7,143.3 150.3,141.1 159.9,138.9 169.5,195.7 179.1,195.7 188.7,195.0 198.3,195.2 207.9,195.7 217.5,209.3 227.1,178.7 236.7,163.5 246.3,162.7 255.9,201.9 265.5,210.0 275.1,210.0 284.6,210.0 294.2,210.0 303.8,210.0 313.4,210.0 323.0,210.0 332.6,209.5 342.2,209.5 351.8,208.9 361.4,208.8 371.0,208.8 380.6,208.7 390.2,208.6 399.8,208.5 409.4,208.5 418.9,208.4 428.5,208.3 438.1,208.2 447.7,208.1 457.3,208.0 466.9,207.9 476.5,207.8 486.1,207.7 495.7,207.6 505.3,207.5 514.9,207.3 524.5,207.2 534.1,207.1 543.7,206.9 553.3,206.8 562.8,206.6 572.4,206.5 582.0,206.3 591.6,206.2 601.2,208.0 610.8,207.9 620.4,207.8 630.0,207.7" fill="none" stroke="#eb6834" stroke-width="2"/><text x="636" y="210.70872087083876" class="lbl" fill="#eb6834">Tax</text><line x1="64" y1="210" x2="630" y2="210" stroke="#cbd5e1"/></svg>
+  <div class="caption">Base plan: income, outgoings and total tax per year (nominal pounds)</div>
+</section>
+
+
+<section class="page">
+  <h2>Scenarios compared</h2>
+  <div class="narrative">Three paths are modelled on the same assumptions. Retire at 50 on the current lifestyle: sustained spending of about 310,000 a year exceeds what the portfolio can support after James stops earning, and the model shows the investment portfolio exhausted around age 60, after which the lifestyle could only be maintained by drawing on the home. Keep the lifestyle and work to 60: the point of exhaustion moves later, to around age 75, but does not go away, because the lifestyle exceeds net earnings even while James works, so the extra years add less than they might. Retire at 50 with spending moderated to about 160,000 a year of core and discretionary: this path is funded to the end of the plan, and passes an estate of roughly 10.7m to the children after inheritance tax and the pension death-tax. The difference between the paths is spending, not the retirement age.</div>
+  <svg viewBox="0 0 760 280" role="img"><line x1="64" y1="250" x2="630" y2="250" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="253" text-anchor="end" class="tick">£0k</text><line x1="64" y1="176.99565135986344" x2="630" y2="176.99565135986344" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="179.99565135986344" text-anchor="end" class="tick">£2.50m</text><line x1="64" y1="103.9913027197269" x2="630" y2="103.9913027197269" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="106.9913027197269" text-anchor="end" class="tick">£5.00m</text><line x1="64" y1="30.986954079590358" x2="630" y2="30.986954079590358" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="33.98695407959036" text-anchor="end" class="tick">£7.50m</text><text x="64" y="272" text-anchor="middle" class="tick">2026</text><text x="131.15254237288136" y="272" text-anchor="middle" class="tick">2033</text><text x="198.3050847457627" y="272" text-anchor="middle" class="tick">2040</text><text x="265.45762711864404" y="272" text-anchor="middle" class="tick">2047</text><text x="332.6101694915254" y="272" text-anchor="middle" class="tick">2054</text><text x="399.76271186440675" y="272" text-anchor="middle" class="tick">2061</text><text x="466.91525423728814" y="272" text-anchor="middle" class="tick">2068</text><text x="534.0677966101696" y="272" text-anchor="middle" class="tick">2075</text><text x="601.2203389830509" y="272" text-anchor="middle" class="tick">2082</text><polyline points="64.0,75.9 73.6,76.5 83.2,77.0 92.8,77.3 102.4,77.5 112.0,77.8 121.6,78.2 131.2,78.7 140.7,79.1 150.3,79.4 159.9,79.7 169.5,90.3 179.1,100.5 188.7,111.2 198.3,121.5 207.9,131.0 217.5,139.6 227.1,150.6 236.7,163.5 246.3,176.7 255.9,178.3 265.5,177.6 275.1,176.9 284.6,176.2 294.2,175.5 303.8,174.7 313.4,174.0 323.0,173.3 332.6,172.5 342.2,171.7 351.8,171.0 361.4,170.2 371.0,169.4 380.6,168.6 390.2,167.8 399.8,167.0 409.4,166.2 418.9,165.4 428.5,164.6 438.1,163.7 447.7,162.9 457.3,162.0 466.9,161.2 476.5,160.3 486.1,159.4 495.7,158.5 505.3,157.6 514.9,156.7 524.5,155.8 534.1,154.9 543.7,153.9 553.3,153.0 562.8,152.1 572.4,151.1 582.0,150.1 591.6,149.1 601.2,148.2 610.8,147.2 620.4,146.1 630.0,145.1" fill="none" stroke="#1c3252" stroke-width="2"/><text x="636" y="148.1274426705976" class="lbl" fill="#1c3252">Base plan</text><polyline points="64.0,75.9 73.6,76.5 83.2,77.0 92.8,77.3 102.4,77.5 112.0,77.8 121.6,78.2 131.2,78.7 140.7,79.1 150.3,79.4 159.9,79.7 169.5,80.0 179.1,79.4 188.7,78.7 198.3,77.0 207.9,73.9 217.5,70.6 227.1,65.9 236.7,61.0 246.3,55.8 255.9,50.4 265.5,56.2 275.1,62.6 284.6,69.3 294.2,76.3 303.8,83.6 313.4,91.3 323.0,98.9 332.6,105.1 342.2,111.4 351.8,121.3 361.4,131.4 371.0,141.8 380.6,152.4 390.2,163.3 399.8,167.0 409.4,166.2 418.9,165.4 428.5,164.6 438.1,163.7 447.7,162.9 457.3,162.0 466.9,161.2 476.5,160.3 486.1,159.4 495.7,158.5 505.3,157.6 514.9,156.7 524.5,155.8 534.1,154.9 543.7,153.9 553.3,153.0 562.8,152.1 572.4,151.1 582.0,150.1 591.6,149.1 601.2,148.2 610.8,147.2 620.4,146.1 630.0,145.1" fill="none" stroke="#2a78d6" stroke-width="2"/><text x="636" y="148.1274426705976" class="lbl" fill="#2a78d6">Keep lifestyle, wor…</text><polyline points="64.0,71.5 73.6,67.7 83.2,63.7 92.8,59.6 102.4,55.2 112.0,50.7 121.6,46.0 131.2,41.2 140.7,36.1 150.3,30.8 159.9,25.2 169.5,28.3 179.1,30.6 188.7,33.9 198.3,36.7 207.9,38.4 217.5,40.2 227.1,40.9 236.7,41.7 246.3,42.6 255.9,43.6 265.5,44.3 275.1,45.1 284.6,46.0 294.2,46.9 303.8,48.0 313.4,49.1 323.0,50.3 332.6,51.1 342.2,52.0 351.8,52.3 361.4,52.6 371.0,53.0 380.6,53.5 390.2,54.0 399.8,54.6 409.4,55.2 418.9,55.8 428.5,56.6 438.1,56.8 447.7,56.9 457.3,57.0 466.9,57.1 476.5,57.2 486.1,57.3 495.7,57.4 505.3,57.5 514.9,57.6 524.5,57.7 534.1,58.0 543.7,59.7 553.3,61.3 562.8,63.0 572.4,64.8 582.0,66.6 591.6,68.4 601.2,70.0 610.8,71.6 620.4,73.2 630.0,74.9" fill="none" stroke="#008300" stroke-width="2"/><text x="636" y="77.94687303412206" class="lbl" fill="#008300">Retire at 50, susta…</text><line x1="64" y1="250" x2="630" y2="250" stroke="#cbd5e1"/></svg>
+  <div class="caption">Net worth in today's money, all scenarios</div>
+  <table>
+    <thead><tr><th>Scenario</th><th class="num">Terminal (nominal)</th><th class="num">Terminal (today's money)</th><th class="num">Net to heirs (after IHT + pension tax)</th><th class="num">Lifetime tax (nominal)</th><th class="num">Gap yrs</th><th class="num">vs base (nominal)</th><th class="num">vs base (today's money)</th></tr></thead>
+    <tbody><tr class="baserow">
+      <td><span class="dot" style="background:#1c3252"></span>Base plan</td>
+      <td class="num">£11.78m</td>
+      <td class="num">£3.59m</td>
+      <td class="num">£7.84m</td>
+      <td class="num">£4.72m</td>
+      
+      <td class="num">40</td>
+      <td class="num">base</td>
+      <td class="num"></td>
+    </tr><tr>
+      <td><span class="dot" style="background:#2a78d6"></span>Keep lifestyle, work to 60</td>
+      <td class="num">£11.78m</td>
+      <td class="num">£3.59m</td>
+      <td class="num">£7.84m</td>
+      <td class="num">£9.74m</td>
+      
+      <td class="num">25</td>
+      <td class="num">+£0k</td>
+      <td class="num">+£0k</td>
+    </tr><tr>
+      <td><span class="dot" style="background:#008300"></span>Retire at 50, sustainable spending</td>
+      <td class="num">£19.67m</td>
+      <td class="num">£5.99m</td>
+      <td class="num">£10.68m</td>
+      <td class="num">£6.59m</td>
+      
+      <td class="num">–</td>
+      <td class="num">+£7.89m</td>
+      <td class="num">+£2.40m</td>
+    </tr></tbody>
+  </table>
+  <div class="caption">Nominal figures are pounds at the end of the plan; today's money figures are deflated to 2026 purchasing power.</div>
+</section>
+
+
+
+<section class="page">
+  <h2>Stochastic testing (Monte Carlo)</h2>
+  <div class="narrative">The Monte Carlo section tests the current-lifestyle plan against 1,000 randomised return paths. It meets all planned spending to the end in about 3% of those runs, with the first shortfall arriving around age 59 in the median failing run. This confirms the deterministic result: the current lifestyle is not resilient to ordinary market variation. The moderated-spending path is materially more robust, because its spending sits within what the portfolio can sustain.</div>
+  <div class="tiles" style="grid-template-columns: repeat(3, 1fr)">
+    <div class="tile"><div class="tl">Plan success rate</div><div class="tv" style="color:#b23434">3.1%</div><div class="ts">of 1000 randomised runs fund every year</div></div>
+    <div class="tile"><div class="tl">Median outcome</div><div class="tv">£3.62m</div><div class="ts">terminal wealth, today's money</div></div>
+    <div class="tile"><div class="tl">Poor-markets outcome</div><div class="tv">£2.44m</div><div class="ts">10th percentile terminal wealth</div></div>
+  </div>
+  <svg viewBox="0 0 760 280" role="img"><line x1="64" y1="250" x2="630" y2="250" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="253" text-anchor="end" class="tick">£0k</text><line x1="64" y1="188.48904789157243" x2="630" y2="188.48904789157243" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="191.48904789157243" text-anchor="end" class="tick">£2.50m</text><line x1="64" y1="126.97809578314485" x2="630" y2="126.97809578314485" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="129.97809578314485" text-anchor="end" class="tick">£5.00m</text><line x1="64" y1="65.46714367471725" x2="630" y2="65.46714367471725" stroke="#eceff3" stroke-dasharray="2 4"/><text x="56" y="68.46714367471725" text-anchor="end" class="tick">£7.50m</text><text x="64" y="272" text-anchor="middle" class="tick">2026</text><text x="131.15254237288136" y="272" text-anchor="middle" class="tick">2033</text><text x="198.3050847457627" y="272" text-anchor="middle" class="tick">2040</text><text x="265.45762711864404" y="272" text-anchor="middle" class="tick">2047</text><text x="332.6101694915254" y="272" text-anchor="middle" class="tick">2054</text><text x="399.76271186440675" y="272" text-anchor="middle" class="tick">2061</text><text x="466.91525423728814" y="272" text-anchor="middle" class="tick">2068</text><text x="534.0677966101696" y="272" text-anchor="middle" class="tick">2075</text><text x="601.2203389830509" y="272" text-anchor="middle" class="tick">2082</text><polygon points="64.0,87.4 73.6,79.6 83.2,73.0 92.8,68.0 102.4,61.2 112.0,52.4 121.6,45.9 131.2,42.2 140.7,37.5 150.3,34.6 159.9,25.2 169.5,32.5 179.1,36.5 188.7,39.9 198.3,42.3 207.9,47.4 217.5,53.2 227.1,52.2 236.7,54.8 246.3,57.0 255.9,63.6 265.5,65.5 275.1,73.4 284.6,78.7 294.2,84.8 303.8,92.4 313.4,99.0 323.0,107.7 332.6,115.5 342.2,116.5 351.8,125.5 361.4,131.7 371.0,133.3 380.6,136.4 390.2,137.8 399.8,137.3 409.4,138.7 418.9,138.2 428.5,137.2 438.1,138.1 447.7,137.2 457.3,136.6 466.9,134.7 476.5,133.0 486.1,132.2 495.7,131.3 505.3,130.4 514.9,129.2 524.5,127.8 534.1,126.4 543.7,125.8 553.3,126.3 562.8,125.7 572.4,123.7 582.0,122.1 591.6,120.7 601.2,119.8 610.8,118.0 620.4,116.3 630.0,113.5 630.0,190.1 620.4,190.3 610.8,190.1 601.2,190.6 591.6,190.7 582.0,191.3 572.4,191.3 562.8,191.8 553.3,191.7 543.7,192.7 534.1,192.2 524.5,193.3 514.9,193.7 505.3,193.9 495.7,194.7 486.1,195.0 476.5,195.5 466.9,195.6 457.3,195.6 447.7,196.5 438.1,196.3 428.5,197.0 418.9,197.0 409.4,197.3 399.8,198.3 390.2,198.2 380.6,198.4 371.0,198.7 361.4,198.8 351.8,199.3 342.2,199.5 332.6,199.6 323.0,199.5 313.4,199.9 303.8,200.2 294.2,200.4 284.6,200.7 275.1,200.7 265.5,200.8 255.9,201.0 246.3,201.5 236.7,200.9 227.1,192.9 217.5,181.5 207.9,183.3 198.3,183.0 188.7,181.8 179.1,174.6 169.5,166.0 159.9,154.3 150.3,152.3 140.7,149.7 131.2,147.9 121.6,145.6 112.0,141.4 102.4,137.0 92.8,134.1 83.2,130.5 73.6,125.1 64.0,118.0" fill="#2a78d6" fill-opacity="0.12"/><polygon points="64.0,96.3 73.6,93.0 83.2,89.5 92.8,87.0 102.4,85.2 112.0,82.1 121.6,79.6 131.2,77.5 140.7,75.0 150.3,74.0 159.9,73.1 169.5,75.9 179.1,83.6 188.7,89.7 198.3,97.8 207.9,101.8 217.5,107.8 227.1,115.9 236.7,122.4 246.3,129.0 255.9,136.8 265.5,144.4 275.1,153.1 284.6,160.4 294.2,164.5 303.8,166.3 313.4,166.7 323.0,166.5 332.6,168.3 342.2,166.9 351.8,166.5 361.4,165.9 371.0,166.3 380.6,164.6 390.2,164.0 399.8,163.5 409.4,162.7 418.9,162.4 428.5,161.7 438.1,160.6 447.7,160.0 457.3,158.6 466.9,157.4 476.5,156.1 486.1,154.9 495.7,154.1 505.3,153.7 514.9,152.0 524.5,151.2 534.1,150.0 543.7,148.1 553.3,147.1 562.8,146.9 572.4,146.1 582.0,145.0 591.6,143.5 601.2,141.9 610.8,141.7 620.4,139.9 630.0,139.3 630.0,177.8 620.4,178.7 610.8,178.9 601.2,179.0 591.6,179.3 582.0,180.4 572.4,180.1 562.8,181.0 553.3,181.4 543.7,182.5 534.1,183.3 524.5,183.5 514.9,184.1 505.3,184.7 495.7,184.8 486.1,185.4 476.5,185.4 466.9,185.9 457.3,185.7 447.7,186.9 438.1,187.2 428.5,187.3 418.9,188.4 409.4,188.1 399.8,189.1 390.2,189.6 380.6,189.6 371.0,189.9 361.4,190.4 351.8,191.3 342.2,191.6 332.6,192.1 323.0,192.6 313.4,192.9 303.8,193.1 294.2,193.5 284.6,193.3 275.1,193.6 265.5,193.5 255.9,193.1 246.3,193.7 236.7,191.0 227.1,181.9 217.5,171.3 207.9,172.9 198.3,169.2 188.7,163.3 179.1,155.2 169.5,144.1 159.9,133.7 150.3,133.3 140.7,130.2 131.2,128.4 121.6,126.6 112.0,124.9 102.4,123.0 92.8,121.1 83.2,119.6 73.6,116.3 64.0,111.1" fill="#2a78d6" fill-opacity="0.22"/><polyline points="64.0,103.9 73.6,104.7 83.2,105.0 92.8,105.7 102.4,105.9 112.0,105.9 121.6,105.4 131.2,105.0 140.7,106.4 150.3,106.6 159.9,105.2 169.5,114.8 179.1,124.8 188.7,133.9 198.3,142.0 207.9,149.3 217.5,153.1 227.1,162.1 236.7,171.9 246.3,179.1 255.9,181.2 265.5,182.0 275.1,183.0 284.6,182.8 294.2,183.1 303.8,183.3 313.4,183.1 323.0,182.2 332.6,181.6 342.2,181.8 351.8,180.6 361.4,180.3 371.0,179.9 380.6,179.4 390.2,178.8 399.8,178.4 409.4,177.7 418.9,176.8 428.5,176.2 438.1,175.3 447.7,174.9 457.3,174.6 466.9,173.9 476.5,172.7 486.1,171.3 495.7,171.0 505.3,170.3 514.9,169.1 524.5,168.9 534.1,168.2 543.7,167.5 553.3,167.0 562.8,165.8 572.4,165.3 582.0,164.7 591.6,164.3 601.2,162.9 610.8,162.8 620.4,162.2 630.0,160.9" fill="none" stroke="#1c3252" stroke-width="2"/><text x="636" y="163.91076014004398" class="lbl" fill="#1c3252">Median</text><text x="636" y="116.47055150657107" class="lbl" fill="#2a78d6">90th</text><text x="636" y="193.0805896477401" class="lbl" fill="#2a78d6">10th</text><line x1="64" y1="250" x2="630" y2="250" stroke="#cbd5e1"/></svg>
+  <div class="caption">Net worth in today's money: median, middle 50% (dark band) and middle 80% (light band) of 1000 runs · lognormal two-factor model (factor correlation 0.3), Student-t tails (df 5) · per-asset volatilities in the register · seed 20260728 (reproducible)</div>
+  <p class="sub">In the runs that fail, the first shortfall arrives at age 51 at the earliest (median failing run: age 59).</p>
+  
+  
+</section>
+
+
+
+<section class="page">
+  <h2>Risks and structural warnings</h2>
+  <div class="narrative">The plan is most sensitive to spending and to investment returns. A sustained lifestyle above roughly 170,000 a year of core and discretionary spending in retirement is not supported by the current portfolio on these assumptions. A Money Purchase Annual Allowance flag arises when James first draws taxable pension income, which would constrain further pension funding from the following year. School and university fees are modelled to rise with earnings. Investment returns are assumed constant at the stated rates; actual returns vary, sequence matters, and capital is at risk. The estate figures assume current inheritance tax rules, including pensions entering the estate from April 2027 and the beneficiary income tax on a pension retained to a death after 75.</div>
+  
+  <div class="warn ">
+    <div class="wtag">MPAA triggered</div>
+    James: the first taxable pension withdrawal in 2043 triggers the Money Purchase Annual Allowance. From the following year, money purchase pension contributions above 10,000 are flagged (the charge itself is not modelled) and carry-forward ends. If continued funding were wanted, the rules only leave contributions unconstrained before first flexible access; tax-free-cash-only access does not trigger the MPAA.
+  </div>
+  <div class="warn ">
+    <div class="wtag">Lump sum allowance</div>
+    James: cumulative tax-free pension elements pass the 268,275 lump sum allowance in 2044. Amounts above the allowance are in fact taxable, so the model understates tax from this point; the timing of tax-free cash is a finite resource whose use is a planning decision.
+  </div>
+</section>
+
+<section class="page">
+  <h2>Key years in detail</h2>
+  <div class="narrative">The key-year tables show how income, spending, tax and net worth move in representative years, including the peak years when both children are in school and James is still working, and the early-retirement years when spending is met from the portfolio.</div>
+  
+  <div class="drill">
+    <h3>2026 · age 40 / 38 · UK</h3>
+    <h4>Money in</h4><table class="mini"><tr><td>Loan drawdown: Mortgage<span class="sub"> · loan</span></td><td class="num">£1,000,000</td></tr><tr><td>James salary<span class="sub"> · employment</span></td><td class="num">£500,000</td></tr><tr><td>GIA (James)<span class="sub"> · dividends</span></td><td class="num">£40,000</td></tr><tr><td>Joint cash<span class="sub"> · interest</span></td><td class="num">£21,000</td></tr></table><h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£250,000</td></tr><tr><td>Travel and lifestyle</td><td class="num">£60,000</td></tr><tr><td>School fees (child, age 7)</td><td class="num">£50,000</td></tr><tr><td>School fees (child, age 5)</td><td class="num">£50,000</td></tr></table><h4>Surplus swept</h4><table class="mini"><tr><td>ISA (ISA (James))</td><td class="num">£20,000</td></tr><tr><td>GIA (GIA (James))</td><td class="num">£812,918</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£243,482 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Total tax</td><td class="num"><b>£243,482</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£6,080,370</b> (after £970,399 of debt) · £5,961,147 in today's money</div>
+    
+  </div>
+  <div class="drill">
+    <h3>2036 · age 50 / 48 · UK</h3>
+    <h4>Money in</h4><table class="mini"><tr><td>James salary<span class="sub"> · employment</span></td><td class="num">£705,299</td></tr><tr><td>GIA (James)<span class="sub"> · dividends</span></td><td class="num">£60,382</td></tr></table><h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£304,749</td></tr><tr><td>Travel and lifestyle</td><td class="num">£73,140</td></tr><tr><td>School fees (child, age 7)</td><td class="num">£70,530</td></tr><tr><td>School fees (child, age 5)</td><td class="num">£70,530</td></tr></table><h4>Funded by</h4><table class="mini"><tr><td>GIA (James)<span class="sub"> · gia, tax £19,240</span></td><td class="num">£169,648 net</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£341,781 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Capital gains tax</td><td class="num">£19,240</td></tr><tr><td>Total tax</td><td class="num"><b>£361,021</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£7,249,603</b> (after £590,293 of debt) · £5,830,587 in today's money</div>
+    
+  </div>
+  <div class="drill">
+    <h3>2037 · age 51 / 49 · UK</h3>
+    <h4>Money in</h4><table class="mini"><tr><td>GIA (James)<span class="sub"> · dividends</span></td><td class="num">£58,585</td></tr></table><h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£310,844</td></tr><tr><td>Travel and lifestyle</td><td class="num">£74,602</td></tr><tr><td>School fees (child, age 7)</td><td class="num">£72,998</td></tr><tr><td>School fees (child, age 5)</td><td class="num">£72,998</td></tr></table><h4>Funded by</h4><table class="mini"><tr><td>GIA (James)<span class="sub"> · gia, tax £67,812</span></td><td class="num">£552,361 net</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£4,902 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Capital gains tax</td><td class="num">£67,812</td></tr><tr><td>Total tax</td><td class="num"><b>£72,714</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£6,937,737</b> (after £542,256 of debt) · £5,470,358 in today's money</div>
+    
+  </div>
+  <div class="drill">
+    <h3>2043 · age 57 / 55 · UK</h3>
+    <h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£350,060</td></tr><tr><td>Travel and lifestyle</td><td class="num">£84,014</td></tr></table><h4>Funded by</h4><table class="mini"><tr><td>ISA (James)<span class="sub"> · isa, tax £0</span></td><td class="num">£143,971 net</td></tr><tr><td>SIPP (James)<span class="sub"> · pension, tax £158,853</span></td><td class="num">£364,705 net</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£158,853 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Total tax</td><td class="num"><b>£158,853</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£4,861,153</b> (after £205,074 of debt) · £3,403,582 in today's money</div>
+    
+  </div>
+  <div class="drill">
+    <h3>2045 · age 59 / 57 · UK</h3>
+    <h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£364,203</td></tr><tr><td>Travel and lifestyle</td><td class="num">£87,409</td></tr></table><h4>Funded by</h4><table class="mini"><tr><td>SIPP (James)<span class="sub"> · pension, tax £240,042</span></td><td class="num">£526,212 net</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£240,042 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Total tax</td><td class="num"><b>£240,042</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£3,731,575</b> (after £71,388 of debt) · £2,511,243 in today's money</div>
+    
+  </div>
+  <div class="drill">
+    <h3>2046 · age 60 / 58 · UK</h3>
+    <h4>Money out</h4><table class="mini"><tr><td>Mortgage payment: Mortgage</td><td class="num">£74,601</td></tr><tr><td>Core living costs</td><td class="num">£371,487</td></tr><tr><td>Travel and lifestyle</td><td class="num">£89,157</td></tr></table><h4>Funded by</h4><table class="mini"><tr><td>SIPP (James)<span class="sub"> · pension, tax £41,124</span></td><td class="num">£149,616 net</td></tr></table><h4>Tax</h4><table class="mini"><tr><td>James</td><td class="num">£41,124 UK · £0 foreign</td></tr><tr><td>Elena</td><td class="num">£0 UK · £0 foreign</td></tr><tr><td>Total tax</td><td class="num"><b>£41,124</b></td></tr></table>
+    <div class="nw">Net worth at year end <b>£3,720,589</b> · £2,454,755 in today's money</div>
+    <div class="nw" style="color:#b23434;font-weight:600">Funding gap this year: £385,628</div>
+  </div>
+  <div class="caption">All drill figures are nominal pounds of the year shown, rounded to the pound: line items and totals may differ by 1 from rounding. Salaries are shown gross of any salary sacrifice; the annual table in Appendix B nets sacrifice from income, which accounts for the difference between the two views.</div>
+</section>
+
+<section class="page">
+  <h2>Appendix A · Model basis and assumptions</h2>
+  
+  <h3>Input assumptions register</h3>
+  <table><thead><tr><th>Item</th><th>Basis used</th><th>Status</th></tr></thead><tbody>
+  <tr><td>James salary</td><td>500k p.a. to end 2036 (retire at 50), earnings-indexed</td>
+    <td><span class="pill warn">assumed</span><span class="sub"> base case tests the stated early-retirement goal</span></td></tr><tr><td>Core living costs</td><td>250k p.a. net, CPI-indexed</td>
+    <td><span class="pill warn">assumed</span><span class="sub"> high-cost lifestyle; excludes travel/discretionary shown separately</span></td></tr><tr><td>Travel and lifestyle</td><td>60k p.a., flagged discretionary</td>
+    <td><span class="pill warn">assumed</span><span class="sub"> flexible: can be moderated in a downturn (guardrail lever)</span></td></tr><tr><td>School and university fees</td><td>50k per child to age 18 (earnings-indexed), then 35k for 3 years each</td>
+    <td><span class="pill warn">assumed</span><span class="sub"> boarding-level fees; historically outpace CPI</span></td></tr><tr><td>Mortgage</td><td>1.0m repayment at 4.5% over 20 years to 2046</td>
+    <td><span class="pill warn">assumed</span></td></tr><tr><td>Investment returns</td><td>GIA 5.5% total, pension/ISA 4.5%, cash 3%, property 3%; CPI 2%</td>
+    <td><span class="pill warn">assumed</span><span class="sub"> illustrative constant returns; actual returns vary and capital is at risk</span></td></tr>
+  </tbody></table>
+  
+  <h3>Model-derived assumptions (generated, always complete)</h3>
+  <table><thead><tr><th>Item</th><th>Basis used</th></tr></thead><tbody>
+  <tr><td>Plan age: James</td><td>Modelled age at death 95 (2081); drives survivor transition and estate timing</td></tr><tr><td>Plan age: Elena</td><td>Modelled age at death 97 (2085); drives survivor transition and estate timing</td></tr>
+  <tr><td>Survivor spending</td><td>70% of joint spending after the first death</td></tr>
+  <tr><td>State pension basis</td><td>Weekly rate x 52, uprated by the triple-lock proxy max(CPI 2.0%, earnings 3.5%, 2.5%)</td></tr>
+  <tr><td>Inflation / earnings growth</td><td>CPI 2.0% · earnings 3.5%; tax bands frozen to 2030 then indexed 2%</td></tr>
+  <tr><td>Return: Family home</td><td>3.0% growth</td></tr><tr><td>Return: GIA (James)</td><td>3.5% growth + 2.0% dividends</td></tr><tr><td>Return: ISA (James)</td><td>4.5% growth</td></tr><tr><td>Return: SIPP (James)</td><td>4.5% growth</td></tr><tr><td>Return: Joint cash</td><td>3.0% interest</td></tr>
+  </tbody></table>
+  <h3>Model treatment</h3>
+  <p class="sub" style="font-size:10.5px">Annual steps. Each person is taxed individually with their own allowances, bands, NI, CGT
+  exemption and ISA allowance; joint holdings split 50/50. Scottish non-savings rates apply where selected. Full banded UK income
+  tax with PA taper, PSA and dividend allowance, on the 2026/27 basis with enacted Autumn 2025 Budget changes year-gated (dividend
+  rates 10.75/35.75/39.35; savings and rUK property income at 22/42/47 from 2027/28; the salary-sacrifice NI exemption capped at
+  2,000 from 2029/30; thresholds frozen to 2030/31 then indexed). CGT with annual exempt amount and 18/24% banding; pensions
+  accessed from 57 with 25% of each withdrawal tax free (cumulative tax-free elements above the 268,275 lump sum allowance are
+  flagged, not taxed); bonds carry the 5% tax-deferred allowance with chargeable gains taxed as income; family investment
+  companies use a two-layer treatment (company-level corporation tax, personal tax on extraction, director's loan repayments tax
+  free); NS&I and ISA income is taxed at destination rates in non-UK years; the temporary non-residence rule charges gains
+  realised during absences of five complete tax years or less on return. Gilt ladders hold each rung to redemption: coupons are
+  savings income, redemption proceeds are free of capital gains tax (gilts are exempt) and values accrete toward par; rungs can
+  be sold early without tax and ladder cashflows are never shocked in simulations. Index-linked rungs are entered in today's
+  money and uplift with inflation (the replayed CPI path in backtests, the assumed rate otherwise). The security floor reports
+  the years of baseline (non-discretionary) spending fundable from secure sources alone - state pension, annuity and DB income
+  taxed as if it were the only income, plus cash, NS&I and gilt ladders - with gifts and one-off purchases excluded. Where
+  assets or salaries carry a concentration group, the share of the extended balance sheet (asset values plus the present value
+  of future earnings, in today's money, life events ignored) in each group is measured and warned on above 40%. A disposal marked MVL winds a company up with
+  capital treatment: corporation tax on company gains, the director's loan repaid tax free, and the distribution taxed as gains,
+  with Business Asset Disposal Relief inside the 1m lifetime limit when claimed (18% from April 2026, 14% before; trading-status
+  and anti-phoenixing conditions are flagged, not modelled). Where enabled, bed-and-ISA moves GIA value into unused ISA allowance each UK year
+  (CGT on the move paid from proceeds) and CGT harvesting uplifts GIA cost basis inside the unused annual exemption (the 30-day
+  share-matching rule is an execution caveat: repurchase a similar, not identical, holding). Spending guardrails, where applied
+  in simulations, cut discretionary spending when the portfolio falls below the stated share of the central plan and re-test
+  annually. Each person's plan age is their modelled death age: the
+  plan runs to the second death, the first death passes everything to the survivor (spouse exemption) with incomes and state
+  pension stopping and spending scaled by the survivor-spending assumption. Inheritance tax is computed each year on a
+  second-death basis (transferable nil-rate bands, residence band with taper, pensions in the estate from April 2027). A pension
+  retained to a second death at 75 or later is additionally taxed as the beneficiary's income on drawdown, on top of that
+  inheritance tax; this pension death-tax is shown separately, assumes a beneficiary marginal rate of 40% (a stated
+  assumption) and treats the pension as the estate's top slice. A death before 75 leaves inherited pensions free of that income
+  tax. Lifetime
+  gifts use the annual exemptions and join the figures as potentially exempt transfers with seven-year clocks, nil-rate-band
+  consumption in gift order and taper relief, and a charitable legacy share applies the 36% rate when it reaches 10% of the
+  baseline. Liabilities are interest-only or amortising repayment loans. Life events scale or pause salaries; planned disposals
+  sell assets or fractions of them by wrapper rules. Pension contributions above the annual allowance are flagged, not charged.
+  Bands indexed 2% from 2030.</p>
+  
+  <h3>Model coverage (generated from the engine, always complete)</h3>
+  <p class="sub" style="font-size:10.5px">The model covers: per-person banded UK income tax with personal-allowance taper, personal savings and dividend allowances, and Scottish non-savings rates where selected; enacted Autumn 2025 Budget changes, year-gated to their start dates; capital gains tax with the annual exempt amount and 18/24% banding; ISA including bed-and-ISA and CGT harvesting; onshore and offshore bonds with the 5% deferred allowance and chargeable gains taxed as income; NS&amp;I and gilt ladders, both fixed and index-linked; pensions accessed from 57 with 25% tax free per withdrawal and a lump sum allowance flag; the pension annual allowance and money purchase annual allowance, flagged; inherited-pension income tax on a pre- or post-75 death; family investment companies on a two-layer basis (corporation tax then personal tax on extraction); the temporary non-residence five-year clawback and a residency timeline with jurisdiction rates; the security floor: years of baseline spending fundable from secure income and liquid reserves; concentration across the extended balance sheet including the present value of future earnings, warned above 40%; members voluntary liquidation with Business Asset Disposal Relief inside the lifetime limit; mortality, the second-death transition with spouse exemption, and survivor-spending scaling; inheritance tax with transferable nil-rate bands, the residence band and taper, and pensions in the estate from April 2027; the pension death-tax on a pension retained to a post-75 second death; lifetime gifts as potentially exempt transfers with seven-year taper and nil-rate-band ordering, and a charitable-legacy 36% rate; liabilities on an interest-only or amortising basis, life events that scale or pause salaries, and planned disposals by wrapper rules; Monte Carlo and a historical backtest, with optional spending guardrails.</p>
+  <p class="sub" style="font-size:10.5px"><b>Not modelled:</b> DB transfer values, trusts and CLTs, gifts with reservation, corporate exit charges other than s185, departure exit taxes, FX.</p>
+  <h3>Important information</h3>
+  <p class="sub" style="font-size:10.5px">This is an illustrative sample based on a fictional household, prepared to demonstrate lifetime cashflow and tax modelling. It is not a personal recommendation, financial advice, tax advice, or a suitability assessment, and it does not advise on any specific investment, product or transaction. The modelling is not a regulated activity and is not authorised or regulated by the Financial Conduct Authority; no cover under the Financial Ombudsman Service or the Financial Services Compensation Scheme applies to it. All figures depend on the stated assumptions; investment returns are assumed constant, whereas actual returns vary and capital is at risk. Tax treatment depends on individual circumstances and current law, both of which may change. Any decisions are yours; for a personal recommendation, please seek regulated financial advice.</p>
+</section>
+
+<section class="page">
+  <h2>Appendix B · Base plan, year by year</h2>
+  
+<table class="yeartable"><thead><tr><th>Year</th><th>Ages</th><th class="num">Income (nominal)</th><th class="num">Outgoings (nominal)</th><th class="num">Tax (nominal)</th><th class="num">Net worth (nominal)</th><th class="num">Today's money</th></tr></thead><tbody>
+<tr>
+  <td>2026</td><td>40 / 38</td>
+  <td class="num">£561,000</td><td class="num">£484,601</td><td class="num">£243,482</td>
+  <td class="num">£6,080,370</td><td class="num">£5,961,147</td></tr><tr>
+  <td>2027</td><td>41 / 39</td>
+  <td class="num">£596,727</td><td class="num">£494,301</td><td class="num">£259,089</td>
+  <td class="num">£6,180,411</td><td class="num">£5,940,418</td></tr><tr>
+  <td>2028</td><td>42 / 40</td>
+  <td class="num">£612,178</td><td class="num">£504,247</td><td class="num">£267,300</td>
+  <td class="num">£6,287,352</td><td class="num">£5,924,712</td></tr><tr>
+  <td>2029</td><td>43 / 41</td>
+  <td class="num">£628,253</td><td class="num">£514,447</td><td class="num">£275,817</td>
+  <td class="num">£6,401,624</td><td class="num">£5,914,111</td></tr><tr>
+  <td>2030</td><td>44 / 42</td>
+  <td class="num">£644,978</td><td class="num">£524,907</td><td class="num">£284,653</td>
+  <td class="num">£6,523,684</td><td class="num">£5,908,701</td></tr><tr>
+  <td>2031</td><td>45 / 43</td>
+  <td class="num">£662,382</td><td class="num">£535,634</td><td class="num">£302,437</td>
+  <td class="num">£6,641,251</td><td class="num">£5,897,241</td></tr><tr>
+  <td>2032</td><td>46 / 44</td>
+  <td class="num">£681,334</td><td class="num">£546,636</td><td class="num">£317,731</td>
+  <td class="num">£6,756,094</td><td class="num">£5,881,586</td></tr><tr>
+  <td>2033</td><td>47 / 45</td>
+  <td class="num">£701,392</td><td class="num">£557,921</td><td class="num">£328,106</td>
+  <td class="num">£6,874,099</td><td class="num">£5,866,977</td></tr><tr>
+  <td>2034</td><td>48 / 46</td>
+  <td class="num">£722,119</td><td class="num">£569,496</td><td class="num">£338,773</td>
+  <td class="num">£6,995,509</td><td class="num">£5,853,529</td></tr><tr>
+  <td>2035</td><td>49 / 47</td>
+  <td class="num">£743,540</td><td class="num">£581,369</td><td class="num">£349,741</td>
+  <td class="num">£7,120,583</td><td class="num">£5,841,359</td></tr><tr>
+  <td>2036</td><td>50 / 48</td>
+  <td class="num">£765,681</td><td class="num">£593,549</td><td class="num">£361,021</td>
+  <td class="num">£7,249,603</td><td class="num">£5,830,587</td></tr><tr>
+  <td>2037</td><td>51 / 49</td>
+  <td class="num">£58,585</td><td class="num">£606,044</td><td class="num">£72,714</td>
+  <td class="num">£6,937,737</td><td class="num">£5,470,358</td></tr><tr>
+  <td>2038</td><td>52 / 50</td>
+  <td class="num">£47,798</td><td class="num">£587,697</td><td class="num">£72,442</td>
+  <td class="num">£6,624,091</td><td class="num">£5,120,638</td></tr><tr>
+  <td>2039</td><td>53 / 51</td>
+  <td class="num">£36,796</td><td class="num">£599,093</td><td class="num">£76,185</td>
+  <td class="num">£6,273,493</td><td class="num">£4,754,524</td></tr><tr>
+  <td>2040</td><td>54 / 52</td>
+  <td class="num">£24,867</td><td class="num">£576,002</td><td class="num">£75,170</td>
+  <td class="num">£5,924,364</td><td class="num">£4,401,890</td></tr><tr>
+  <td>2041</td><td>55 / 53</td>
+  <td class="num">£12,773</td><td class="num">£538,925</td><td class="num">£72,503</td>
+  <td class="num">£5,592,827</td><td class="num">£4,074,072</td></tr><tr>
+  <td>2042</td><td>56 / 54</td>
+  <td class="num">£828</td><td class="num">£548,212</td><td class="num">£3,384</td>
+  <td class="num">£5,295,411</td><td class="num">£3,781,784</td></tr><tr>
+  <td>2043</td><td>57 / 55</td>
+  <td class="num">£0</td><td class="num">£508,675</td><td class="num">£158,853</td>
+  <td class="num">£4,861,153</td><td class="num">£3,403,582</td></tr><tr>
+  <td>2044</td><td>58 / 56</td>
+  <td class="num">£0</td><td class="num">£517,357</td><td class="num">£236,080</td>
+  <td class="num">£4,316,090</td><td class="num">£2,962,697</td></tr><tr>
+  <td>2045</td><td>59 / 57</td>
+  <td class="num">£0</td><td class="num">£526,212</td><td class="num">£240,042</td>
+  <td class="num">£3,731,575</td><td class="num">£2,511,243</td></tr><tr style="background:#faecec">
+  <td>2046</td><td>60 / 58</td>
+  <td class="num">£0</td><td class="num">£535,244</td><td class="num">£41,124</td>
+  <td class="num">£3,720,589</td><td class="num">£2,454,755</td></tr><tr style="background:#faecec">
+  <td>2047</td><td>61 / 59</td>
+  <td class="num">£0</td><td class="num">£469,857</td><td class="num">£0</td>
+  <td class="num">£3,832,207</td><td class="num">£2,478,821</td></tr><tr style="background:#faecec">
+  <td>2048</td><td>62 / 60</td>
+  <td class="num">£0</td><td class="num">£479,254</td><td class="num">£0</td>
+  <td class="num">£3,947,173</td><td class="num">£2,503,123</td></tr><tr style="background:#faecec">
+  <td>2049</td><td>63 / 61</td>
+  <td class="num">£0</td><td class="num">£488,839</td><td class="num">£0</td>
+  <td class="num">£4,065,588</td><td class="num">£2,527,664</td></tr><tr style="background:#faecec">
+  <td>2050</td><td>64 / 62</td>
+  <td class="num">£0</td><td class="num">£498,616</td><td class="num">£0</td>
+  <td class="num">£4,187,556</td><td class="num">£2,552,445</td></tr><tr style="background:#faecec">
+  <td>2051</td><td>65 / 63</td>
+  <td class="num">£0</td><td class="num">£508,588</td><td class="num">£0</td>
+  <td class="num">£4,313,183</td><td class="num">£2,577,469</td></tr><tr style="background:#faecec">
+  <td>2052</td><td>66 / 64</td>
+  <td class="num">£0</td><td class="num">£518,760</td><td class="num">£0</td>
+  <td class="num">£4,442,578</td><td class="num">£2,602,738</td></tr><tr style="background:#faecec">
+  <td>2053</td><td>67 / 65</td>
+  <td class="num">£0</td><td class="num">£529,135</td><td class="num">£0</td>
+  <td class="num">£4,575,855</td><td class="num">£2,628,255</td></tr><tr style="background:#faecec">
+  <td>2054</td><td>68 / 66</td>
+  <td class="num">£32,877</td><td class="num">£539,718</td><td class="num">£2,532</td>
+  <td class="num">£4,713,131</td><td class="num">£2,654,022</td></tr><tr style="background:#faecec">
+  <td>2055</td><td>69 / 67</td>
+  <td class="num">£34,028</td><td class="num">£550,512</td><td class="num">£2,681</td>
+  <td class="num">£4,854,525</td><td class="num">£2,680,042</td></tr><tr style="background:#faecec">
+  <td>2056</td><td>70 / 68</td>
+  <td class="num">£70,437</td><td class="num">£561,522</td><td class="num">£5,673</td>
+  <td class="num">£5,000,161</td><td class="num">£2,706,317</td></tr><tr style="background:#faecec">
+  <td>2057</td><td>71 / 69</td>
+  <td class="num">£72,902</td><td class="num">£572,753</td><td class="num">£5,998</td>
+  <td class="num">£5,150,166</td><td class="num">£2,732,849</td></tr><tr style="background:#faecec">
+  <td>2058</td><td>72 / 70</td>
+  <td class="num">£75,454</td><td class="num">£584,208</td><td class="num">£6,337</td>
+  <td class="num">£5,304,670</td><td class="num">£2,759,642</td></tr><tr style="background:#faecec">
+  <td>2059</td><td>73 / 71</td>
+  <td class="num">£78,095</td><td class="num">£595,892</td><td class="num">£6,690</td>
+  <td class="num">£5,463,811</td><td class="num">£2,786,697</td></tr><tr style="background:#faecec">
+  <td>2060</td><td>74 / 72</td>
+  <td class="num">£80,828</td><td class="num">£607,810</td><td class="num">£7,058</td>
+  <td class="num">£5,627,725</td><td class="num">£2,814,018</td></tr><tr style="background:#faecec">
+  <td>2061</td><td>75 / 73</td>
+  <td class="num">£83,657</td><td class="num">£619,966</td><td class="num">£7,442</td>
+  <td class="num">£5,796,557</td><td class="num">£2,841,606</td></tr><tr style="background:#faecec">
+  <td>2062</td><td>76 / 74</td>
+  <td class="num">£86,585</td><td class="num">£632,365</td><td class="num">£7,841</td>
+  <td class="num">£5,970,453</td><td class="num">£2,869,465</td></tr><tr style="background:#faecec">
+  <td>2063</td><td>77 / 75</td>
+  <td class="num">£89,616</td><td class="num">£645,012</td><td class="num">£8,258</td>
+  <td class="num">£6,149,567</td><td class="num">£2,897,597</td></tr><tr style="background:#faecec">
+  <td>2064</td><td>78 / 76</td>
+  <td class="num">£92,752</td><td class="num">£657,913</td><td class="num">£8,692</td>
+  <td class="num">£6,334,054</td><td class="num">£2,926,005</td></tr><tr style="background:#faecec">
+  <td>2065</td><td>79 / 77</td>
+  <td class="num">£95,998</td><td class="num">£671,071</td><td class="num">£9,144</td>
+  <td class="num">£6,524,076</td><td class="num">£2,954,691</td></tr><tr style="background:#faecec">
+  <td>2066</td><td>80 / 78</td>
+  <td class="num">£99,358</td><td class="num">£684,492</td><td class="num">£9,615</td>
+  <td class="num">£6,719,798</td><td class="num">£2,983,659</td></tr><tr style="background:#faecec">
+  <td>2067</td><td>81 / 79</td>
+  <td class="num">£102,836</td><td class="num">£698,182</td><td class="num">£10,106</td>
+  <td class="num">£6,921,392</td><td class="num">£3,012,910</td></tr><tr style="background:#faecec">
+  <td>2068</td><td>82 / 80</td>
+  <td class="num">£106,435</td><td class="num">£712,146</td><td class="num">£10,616</td>
+  <td class="num">£7,129,034</td><td class="num">£3,042,449</td></tr><tr style="background:#faecec">
+  <td>2069</td><td>83 / 81</td>
+  <td class="num">£110,160</td><td class="num">£726,389</td><td class="num">£11,148</td>
+  <td class="num">£7,342,905</td><td class="num">£3,072,277</td></tr><tr style="background:#faecec">
+  <td>2070</td><td>84 / 82</td>
+  <td class="num">£114,016</td><td class="num">£740,916</td><td class="num">£11,701</td>
+  <td class="num">£7,563,192</td><td class="num">£3,102,397</td></tr><tr style="background:#faecec">
+  <td>2071</td><td>85 / 83</td>
+  <td class="num">£118,007</td><td class="num">£755,735</td><td class="num">£12,277</td>
+  <td class="num">£7,790,087</td><td class="num">£3,132,813</td></tr><tr style="background:#faecec">
+  <td>2072</td><td>86 / 84</td>
+  <td class="num">£122,137</td><td class="num">£770,849</td><td class="num">£12,877</td>
+  <td class="num">£8,023,790</td><td class="num">£3,163,527</td></tr><tr style="background:#faecec">
+  <td>2073</td><td>87 / 85</td>
+  <td class="num">£126,412</td><td class="num">£786,266</td><td class="num">£13,501</td>
+  <td class="num">£8,264,504</td><td class="num">£3,194,542</td></tr><tr style="background:#faecec">
+  <td>2074</td><td>88 / 86</td>
+  <td class="num">£130,836</td><td class="num">£801,992</td><td class="num">£14,150</td>
+  <td class="num">£8,512,439</td><td class="num">£3,225,861</td></tr><tr style="background:#faecec">
+  <td>2075</td><td>89 / 87</td>
+  <td class="num">£135,415</td><td class="num">£818,032</td><td class="num">£14,825</td>
+  <td class="num">£8,767,812</td><td class="num">£3,257,487</td></tr><tr style="background:#faecec">
+  <td>2076</td><td>90 / 88</td>
+  <td class="num">£140,155</td><td class="num">£834,392</td><td class="num">£15,528</td>
+  <td class="num">£9,030,846</td><td class="num">£3,289,423</td></tr><tr style="background:#faecec">
+  <td>2077</td><td>91 / 89</td>
+  <td class="num">£145,060</td><td class="num">£851,080</td><td class="num">£16,259</td>
+  <td class="num">£9,301,772</td><td class="num">£3,321,672</td></tr><tr style="background:#faecec">
+  <td>2078</td><td>92 / 90</td>
+  <td class="num">£150,137</td><td class="num">£868,102</td><td class="num">£17,020</td>
+  <td class="num">£9,580,825</td><td class="num">£3,354,237</td></tr><tr style="background:#faecec">
+  <td>2079</td><td>93 / 91</td>
+  <td class="num">£155,392</td><td class="num">£885,464</td><td class="num">£17,810</td>
+  <td class="num">£9,868,250</td><td class="num">£3,387,122</td></tr><tr style="background:#faecec">
+  <td>2080</td><td>94 / 92</td>
+  <td class="num">£160,831</td><td class="num">£903,173</td><td class="num">£18,633</td>
+  <td class="num">£10,164,297</td><td class="num">£3,420,329</td></tr><tr style="background:#faecec">
+  <td>2081</td><td>95 / 93</td>
+  <td class="num">£166,460</td><td class="num">£921,237</td><td class="num">£19,488</td>
+  <td class="num">£10,469,226</td><td class="num">£3,453,862</td></tr><tr style="background:#faecec">
+  <td>2082</td><td>94</td>
+  <td class="num">£86,143</td><td class="num">£657,763</td><td class="num">£10,189</td>
+  <td class="num">£10,783,303</td><td class="num">£3,487,723</td></tr><tr style="background:#faecec">
+  <td>2083</td><td>95</td>
+  <td class="num">£89,158</td><td class="num">£670,918</td><td class="num">£10,651</td>
+  <td class="num">£11,106,802</td><td class="num">£3,521,917</td></tr><tr style="background:#faecec">
+  <td>2084</td><td>96</td>
+  <td class="num">£92,279</td><td class="num">£684,336</td><td class="num">£11,131</td>
+  <td class="num">£11,440,006</td><td class="num">£3,556,445</td></tr><tr style="background:#faecec">
+  <td>2085</td><td>97</td>
+  <td class="num">£95,508</td><td class="num">£698,023</td><td class="num">£11,631</td>
+  <td class="num">£11,783,206</td><td class="num">£3,591,312</td></tr>
+</tbody></table>
+</section>
+
+<div class="foot">© 2026 Chenji Meng. All rights reserved · Proprietary model · Horizon v0.9.6 ·
+Generated 2026-07-31 · Inputs (archived alongside this report): base.json (fb7a69575c40) · work60.json (8c5e88906e1b) · sustainable.json (d294ae1faf51) · narrative.json (40a440782c2d)</div>
+
+</body></html>
