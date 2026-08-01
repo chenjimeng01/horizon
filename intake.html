@@ -221,8 +221,21 @@
   <div class="card">
     <div class="hd"><div class="t">6 · What you owe</div><div class="s">Mortgages and loans.</div></div>
     <div class="bd">
-      <label class="f"><span class="l">Debts: type, balance, rate, and when repaid (blank if none)</span>
-        <textarea name="debts" placeholder="For example: mortgage 180,000 at 4.1 percent, repaid 2032"></textarea></label>
+      <label class="f"><span class="l">Main mortgage balance (blank if none)</span>
+        <input type="number" name="mortBalance" placeholder="e.g. 300000"></label>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f"><span class="l">Interest rate (%)</span>
+          <input type="number" step="0.01" name="mortRate" placeholder="4.0"></label>
+        <label class="f"><span class="l">Repayment type</span>
+          <select name="mortType">
+            <option value="repayment">Repayment (capital + interest)</option>
+            <option value="interest_only">Interest only</option>
+          </select></label>
+        <label class="f"><span class="l">Years left on the term</span>
+          <input type="number" name="mortTerm" placeholder="25"></label>
+      </div>
+      <label class="f" style="margin-top:10px"><span class="l">Any other debts: type, balance, rate, and when repaid (blank if none)</span>
+        <textarea name="debts" placeholder="For example: car loan 15,000 at 6 percent, repaid 2029"></textarea></label>
     </div>
   </div>
 
@@ -404,6 +417,7 @@ document.getElementById('f').addEventListener('submit', e => {
     spending: { now: num('spendNow'), retirement: num('spendRetire'), oneOffs: v('oneOffs') },
     assets,
     assetNotes: v('assetNotes'),
+    mortgage: num('mortBalance') ? { balance: num('mortBalance'), rate: num('mortRate') != null ? num('mortRate') / 100 : null, type: v('mortType') || 'repayment', termYears: num('mortTerm') } : null,
     debts: v('debts'),
     pensionNotes: v('pensionNotes'),
     abroad: goals.includes('abroad') ? { where: v('abroadWhere'), year: num('abroadYear'), returnIntent: v('abroadReturn'), notes: v('abroadNotes') } : null,
