@@ -240,6 +240,38 @@
   </div>
 
   <div class="card">
+    <div class="hd"><div class="t">6b · Family plans and expected changes</div>
+      <div class="s">The things you told us matter: educating and helping the children, and any expected change in pay or an inheritance. Amounts in today's money.</div></div>
+    <div class="bd">
+      <div class="l" style="margin-bottom:4px">Children's education (one row per child; blank if none)</div>
+      <table class="rowtable" id="children">
+        <thead><tr><th style="width:26%">Child (label)</th><th>Birth year</th><th>School fee / yr</th><th>University / yr</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="btn" id="addChild" style="margin-top:8px">+ Add a child</button>
+
+      <div class="l" style="margin:16px 0 4px">Planned gifts (e.g. a home deposit for a child; blank if none)</div>
+      <table class="rowtable" id="gifts">
+        <thead><tr><th>Amount</th><th>Year</th><th style="width:40%">Note</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" class="btn" id="addGift" style="margin-top:8px">+ Add a gift</button>
+
+      <div class="grid3" style="margin-top:16px">
+        <label class="f"><span class="l">Expected inheritance amount (blank if none)</span><input type="number" name="inhAmount" placeholder="0"></label>
+        <label class="f"><span class="l">Year expected</span><input type="number" name="inhYear" placeholder="e.g. 2041"></label>
+        <label class="f"><span class="l">Currency</span>
+          <select name="inhCurrency"><option value="GBP">GBP</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="other">Other</option></select></label>
+      </div>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f"><span class="l">Expected pay change: new salary (blank if none)</span><input type="number" name="promoSalary" placeholder="0"></label>
+        <label class="f"><span class="l">New bonus</span><input type="number" name="promoBonus" placeholder="0"></label>
+        <label class="f"><span class="l">Year it starts</span><input type="number" name="promoYear" placeholder="e.g. 2028"></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="hd"><div class="t">7 · Pensions detail</div><div class="s">Still no provider names needed.</div></div>
     <div class="bd">
       <div class="grid2">
@@ -372,6 +404,33 @@ function addRow(type) {
 ['cash', 'isa', 'pension'].forEach(addRow);
 document.getElementById('addAsset').onclick = () => addRow('gia');
 
+// Children (education) and gifts: same repeating-row pattern.
+const childBody = document.querySelector('#children tbody');
+function addChildRow() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" data-k="name" placeholder="Child 1"></td>
+    <td><input type="number" data-k="birthYear" placeholder="2019"></td>
+    <td><input type="number" data-k="schoolFee" min="0" step="1000" placeholder="0"></td>
+    <td><input type="number" data-k="uniCost" min="0" step="1000" placeholder="0"></td>
+    <td><button type="button" class="btn danger" title="Remove">×</button></td>`;
+  tr.querySelector('.danger').onclick = () => tr.remove();
+  childBody.appendChild(tr);
+}
+document.getElementById('addChild').onclick = addChildRow;
+const giftBody = document.querySelector('#gifts tbody');
+function addGiftRow() {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="number" data-k="amount" min="0" step="1000" placeholder="0"></td>
+    <td><input type="number" data-k="year" placeholder="2049"></td>
+    <td><input type="text" data-k="note" placeholder="deposit help"></td>
+    <td><button type="button" class="btn danger" title="Remove">×</button></td>`;
+  tr.querySelector('.danger').onclick = () => tr.remove();
+  giftBody.appendChild(tr);
+}
+document.getElementById('addGift').onclick = addGiftRow;
+
 // Build + download the intake JSON. Client-side only by design.
 document.getElementById('f').addEventListener('submit', e => {
   e.preventDefault();
@@ -419,6 +478,16 @@ document.getElementById('f').addEventListener('submit', e => {
     assetNotes: v('assetNotes'),
     mortgage: num('mortBalance') ? { balance: num('mortBalance'), rate: num('mortRate') != null ? num('mortRate') / 100 : null, type: v('mortType') || 'repayment', termYears: num('mortTerm') } : null,
     debts: v('debts'),
+    children: [...childBody.querySelectorAll('tr')].map(tr => {
+      const g = k => tr.querySelector(`[data-k=${k}]`).value;
+      return { name: g('name') || null, birthYear: Number(g('birthYear')) || null, schoolFee: Number(g('schoolFee') || 0), uniCost: Number(g('uniCost') || 0) };
+    }).filter(c => c.birthYear && (c.schoolFee > 0 || c.uniCost > 0)),
+    gifts: [...giftBody.querySelectorAll('tr')].map(tr => {
+      const g = k => tr.querySelector(`[data-k=${k}]`).value;
+      return { amount: Number(g('amount') || 0), year: Number(g('year')) || null, note: g('note') || null };
+    }).filter(x => x.amount > 0 && x.year),
+    inheritance: num('inhAmount') ? { amount: num('inhAmount'), year: num('inhYear'), currency: v('inhCurrency') || 'GBP' } : null,
+    promotion: (num('promoSalary') || num('promoBonus')) ? { newSalary: num('promoSalary') || 0, newBonus: num('promoBonus') || 0, year: num('promoYear') } : null,
     pensionNotes: v('pensionNotes'),
     abroad: goals.includes('abroad') ? { where: v('abroadWhere'), year: num('abroadYear'), returnIntent: v('abroadReturn'), notes: v('abroadNotes') } : null,
     fi: goals.includes('fi_target') ? { income: num('fiIncome'), age: num('fiAge') } : null,
