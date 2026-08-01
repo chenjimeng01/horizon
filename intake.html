@@ -72,6 +72,20 @@
   .done { border-left: 3px solid var(--green); background: #e9f5ee; border-radius: 0 8px 8px 0; padding: 14px 16px; }
   .err { color: var(--red); font-size: 12px; margin-top: 8px; font-weight: 600; }
   .foot { font-size: 10px; color: var(--mute); margin-top: 26px; border-top: 1px solid var(--divider); padding-top: 10px; }
+  /* Quest progress strip (Phase 4: intake as quests). Screen-only. */
+  .qstrip { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.06);
+    padding: 10px 16px; margin-bottom: 16px; }
+  .qstrip svg { flex: 0 0 auto; }
+  .qstrip .qtext { min-width: 0; }
+  .qstrip .qpct { font-size: 13px; font-weight: 700; color: var(--text); }
+  .qstrip .qnext { font-size: 12px; color: var(--sub); margin-top: 1px; }
+  .chip { display: inline-block; font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px;
+    padding: 2px 8px; border-radius: 20px; background: #eef2f6; color: var(--mute);
+    border: 1px solid var(--border); margin-top: 4px; }
+  .chip.added { background: #e9f5ee; color: var(--green); border-color: #bfe2cd; }
+  .card > .hd .chip { text-transform: none; }
 </style>
 </head>
 <body>
@@ -82,6 +96,20 @@
   It runs entirely in your browser: <b>nothing is sent or stored anywhere</b>. At the end it
   produces a single file that you download and send to us yourself, through whichever secure
   channel we have agreed.</p>
+
+  <div class="qstrip" id="qstrip">
+    <svg viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Completeness">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="var(--divider)" stroke-width="6"></circle>
+      <circle id="qringFg" cx="24" cy="24" r="20" fill="none" stroke="var(--accent)" stroke-width="6"
+        stroke-linecap="round" transform="rotate(-90 24 24)" stroke-dasharray="0 125.7"></circle>
+      <text id="qringText" x="24" y="24" text-anchor="middle" dominant-baseline="central"
+        style="font-size:13px;font-weight:700;fill:var(--navy)">0%</text>
+    </svg>
+    <div class="qtext">
+      <div class="qpct"><span id="qpctNum">0</span>% complete</div>
+      <div class="qnext" id="qnext"></div>
+    </div>
+  </div>
 
   <div class="sample">
     <div class="st"><b>See what you get first.</b> Here is a full sample report, the lifetime cashflow
@@ -130,7 +158,8 @@
 
   <div class="card">
     <div class="hd"><div class="t">1 · What do you want to explore?</div>
-      <div class="s">Choose everything that applies. The rest of the form adapts to your choices.</div></div>
+      <div class="s">Choose everything that applies. The rest of the form adapts to your choices.</div>
+      <div class="chip" id="chip-goals" data-unlocks="the tailored scenario proposal">Unlocks the tailored scenario proposal</div></div>
     <div class="bd" id="goals">
       <label class="goal"><input type="checkbox" name="goal" value="sustainability">
         <span><b>Will my money last?</b><div class="d">Lifetime cashflow projection: can we fund our intended spending for life, and with how much margin.</div></span></label>
@@ -152,7 +181,8 @@
   </div>
 
   <div class="card">
-    <div class="hd"><div class="t">2 · About you</div><div class="s">Couples are modelled per person; complete both columns if joint.</div></div>
+    <div class="hd"><div class="t">2 · About you</div><div class="s">Couples are modelled per person; complete both columns if joint.</div>
+      <div class="chip" id="chip-people" data-unlocks="the plan timeline and milestones">Unlocks the plan timeline and milestones</div></div>
     <div class="bd">
       <div class="grid2">
         <div>
@@ -193,7 +223,8 @@
   </div>
 
   <div class="card">
-    <div class="hd"><div class="t">4 · Spending</div><div class="s">Rough annual figures are fine; we refine together.</div></div>
+    <div class="hd"><div class="t">4 · Spending</div><div class="s">Rough annual figures are fine; we refine together.</div>
+      <div class="chip" id="chip-spending" data-unlocks="sustainability and the resilience score">Unlocks sustainability and the resilience score</div></div>
     <div class="bd">
       <div class="grid2">
         <label class="f"><span class="l">Current household spending (per year, after tax)</span><input type="number" name="spendNow" min="0" step="1000"></label>
@@ -206,7 +237,8 @@
 
   <div class="card">
     <div class="hd"><div class="t">5 · What you own</div>
-      <div class="s">By account type only. Please do not enter provider names, fund names or account numbers.</div></div>
+      <div class="s">By account type only. Please do not enter provider names, fund names or account numbers.</div>
+      <div class="chip" id="chip-assets" data-unlocks="net worth and the security floor">Unlocks net worth and the security floor</div></div>
     <div class="bd">
       <table class="rowtable" id="assets">
         <thead><tr><th style="width:34%">Type</th><th style="width:22%">Whose</th><th>Current value</th><th>Adding per year</th><th></th></tr></thead>
@@ -219,7 +251,8 @@
   </div>
 
   <div class="card">
-    <div class="hd"><div class="t">6 · What you owe</div><div class="s">Mortgages and loans.</div></div>
+    <div class="hd"><div class="t">6 · What you owe</div><div class="s">Mortgages and loans.</div>
+      <div class="chip" id="chip-debts" data-unlocks="the full net-worth picture">Unlocks the full net-worth picture</div></div>
     <div class="bd">
       <label class="f"><span class="l">Main mortgage balance (blank if none)</span>
         <input type="number" name="mortBalance" placeholder="e.g. 300000"></label>
@@ -241,7 +274,8 @@
 
   <div class="card">
     <div class="hd"><div class="t">6b · Family plans and expected changes</div>
-      <div class="s">The things you told us matter: educating and helping the children, and any expected change in pay or an inheritance. Amounts in today's money.</div></div>
+      <div class="s">The things you told us matter: educating and helping the children, and any expected change in pay or an inheritance. Amounts in today's money.</div>
+      <div class="chip" id="chip-family" data-unlocks="education, gifting and pay-change scenarios">Unlocks education, gifting and pay-change scenarios</div></div>
     <div class="bd">
       <div class="l" style="margin-bottom:4px">Children's education (one row per child; blank if none)</div>
       <table class="rowtable" id="children">
@@ -272,7 +306,8 @@
   </div>
 
   <div class="card">
-    <div class="hd"><div class="t">7 · Pensions detail</div><div class="s">Still no provider names needed.</div></div>
+    <div class="hd"><div class="t">7 · Pensions detail</div><div class="s">Still no provider names needed.</div>
+      <div class="chip" id="chip-pensions" data-unlocks="the retirement forecast">Unlocks the retirement forecast</div></div>
     <div class="bd">
       <div class="grid2">
         <label class="f"><span class="l">Your state pension forecast (weekly, if known)</span><input type="number" name="c1sp" step="0.01" placeholder="241.30 if full"></label>
@@ -431,35 +466,21 @@ function addGiftRow() {
 }
 document.getElementById('addGift').onclick = addGiftRow;
 
-// Build + download the intake JSON. Client-side only by design.
-document.getElementById('f').addEventListener('submit', e => {
-  e.preventDefault();
-  const err = document.getElementById('err');
-  err.classList.add('hidden');
+// Read the whole form into the intakeVersion:1 object. Factored out of the
+// submit handler so the live completeness ring can read the SAME fields the
+// download uses. The field expressions below are unchanged from the original
+// inline submit collection, so the downloaded JSON is byte-identical.
+function readIntake() {
   const v = name => document.querySelector(`[name=${name}]`)?.value?.trim() ?? '';
   const num = name => { const x = v(name); return x === '' ? null : Number(x); };
   const goals = [...document.querySelectorAll('input[name=goal]:checked')].map(x => x.value);
-
-  const problems = [];
-  if (!goals.length) problems.push('choose at least one goal in section 1');
-  if (!v('c1name')) problems.push('your first name');
-  if (!num('c1birth')) problems.push('your year of birth');
-  if (!v('email')) problems.push('a contact email');
-  if (!document.getElementById('cPrivacy').checked || !document.getElementById('cScope').checked)
-    problems.push('both required consent boxes');
-  if (problems.length) {
-    err.textContent = 'Still needed: ' + problems.join('; ') + '.';
-    err.classList.remove('hidden');
-    err.scrollIntoView({ block: 'center' });
-    return;
-  }
 
   const assets = [...tbody.querySelectorAll('tr')].map(tr => {
     const g = k => tr.querySelector(`[data-k=${k}]`).value;
     return { type: g('type'), owner: g('owner'), value: Number(g('value') || 0), contribPerYear: Number(g('contrib') || 0) };
   }).filter(a => a.value > 0 || a.contribPerYear > 0);
 
-  const intake = {
+  return {
     intakeVersion: 1,
     createdAt: new Date().toISOString(),
     goals,
@@ -500,6 +521,32 @@ document.getElementById('f').addEventListener('submit', e => {
       at: new Date().toISOString(),
     },
   };
+}
+
+// Build + download the intake JSON. Client-side only by design.
+document.getElementById('f').addEventListener('submit', e => {
+  e.preventDefault();
+  const err = document.getElementById('err');
+  err.classList.add('hidden');
+  const v = name => document.querySelector(`[name=${name}]`)?.value?.trim() ?? '';
+  const num = name => { const x = v(name); return x === '' ? null : Number(x); };
+  const goals = [...document.querySelectorAll('input[name=goal]:checked')].map(x => x.value);
+
+  const problems = [];
+  if (!goals.length) problems.push('choose at least one goal in section 1');
+  if (!v('c1name')) problems.push('your first name');
+  if (!num('c1birth')) problems.push('your year of birth');
+  if (!v('email')) problems.push('a contact email');
+  if (!document.getElementById('cPrivacy').checked || !document.getElementById('cScope').checked)
+    problems.push('both required consent boxes');
+  if (problems.length) {
+    err.textContent = 'Still needed: ' + problems.join('; ') + '.';
+    err.classList.remove('hidden');
+    err.scrollIntoView({ block: 'center' });
+    return;
+  }
+
+  const intake = readIntake();
 
   const slug = v('c1name').toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const fname = `intake-${slug}-${new Date().toISOString().slice(0, 10)}.json`;
@@ -513,6 +560,98 @@ document.getElementById('f').addEventListener('submit', e => {
   document.getElementById('done').classList.remove('hidden');
   document.getElementById('done').scrollIntoView({ block: 'center' });
 });
+
+// ---- Quest completeness (Phase 4: intake as quests). Purely additive: it
+// reads the form and updates the progress strip and per-card chips; it never
+// touches the collected JSON above. ----
+//
+// predicates mirrored in intake/index.html <-> scripts/lib/completeness.mjs
+// - change both together. This page is self-contained (no build step) and cannot
+//   import completeness.mjs, so the predicates below are duplicated from it. They
+//   MUST stay identical; the golden suite pins the .mjs side. This drift risk is
+//   accepted and documented.
+function qPosNum(x) {
+  if (typeof x === 'number') return isFinite(x) && x > 0;
+  if (x == null || x === '') return false;
+  const n = Number(x);
+  return isFinite(n) && n > 0;
+}
+function qHasText(x) { return typeof x === 'string' && x.trim() !== ''; }
+// Coerces to an array, dropping anything that is not actually one. readIntake()
+// always returns proper arrays, but this mirrors completeness.mjs's arr()
+// guard so the two stay identical and neither throws on a malformed intake.
+function qArr(v) { return Array.isArray(v) ? v : []; }
+const QUEST_SECTIONS = [
+  { key: 'goals', label: 'your goals', unlocks: 'the tailored scenario proposal',
+    done: i => qArr(i?.goals).length > 0 },
+  { key: 'people', label: 'your name and year of birth', unlocks: 'the plan timeline and milestones',
+    done: i => { const c = qArr(i?.clients)[0]; return !!(c && qHasText(c.name) && qPosNum(c.birthYear)); } },
+  { key: 'spending', label: 'your spending', unlocks: 'sustainability and the resilience score',
+    done: i => qPosNum(i?.spending?.now) },
+  { key: 'assets', label: 'what you own', unlocks: 'net worth and the security floor',
+    done: i => qArr(i?.assets).some(a => qPosNum(a?.value)) },
+  { key: 'debts', label: 'your mortgage or other debts', unlocks: 'the full net-worth picture',
+    done: i => {
+      const m = i?.mortgage;
+      if (m && qPosNum(m.balance)) return true;
+      if (qHasText(i?.debts)) return true;
+      const assetsPresent = qArr(i?.assets).length > 0;
+      return assetsPresent && qPosNum(i?.spending?.now);
+    } },
+  { key: 'family', label: 'family plans and expected changes', unlocks: 'education, gifting and pay-change scenarios',
+    done: i => {
+      if (qArr(i?.children).length > 0) return true;
+      if (qArr(i?.gifts).length > 0) return true;
+      if (i?.inheritance && qPosNum(i.inheritance.amount)) return true;
+      if (i?.promotion && (qPosNum(i.promotion.newSalary) || qPosNum(i.promotion.newBonus))) return true;
+      return false;
+    } },
+  { key: 'pensions', label: 'your pensions', unlocks: 'the retirement forecast',
+    done: i => {
+      if (qArr(i?.assets).some(a => a?.type === 'pension' && qPosNum(a?.value))) return true;
+      if (qArr(i?.clients).some(c => qPosNum(c?.statePensionWeekly))) return true;
+      return false;
+    } },
+];
+function questCompleteness(intake) {
+  const sections = QUEST_SECTIONS.map(s => ({ key: s.key, label: s.label, done: !!s.done(intake), unlocks: s.unlocks }));
+  const doneCount = sections.filter(s => s.done).length;
+  const pct = Math.round(100 * doneCount / sections.length);
+  const next = sections.find(s => !s.done);
+  return { pct, sections, nextUnlock: next ? next.unlocks : null, next: next || null };
+}
+
+const QR = 20;                    // ring radius; matches the strip SVG
+const QC = 2 * Math.PI * QR;      // circumference; same donut math as the report rings
+function renderQuests() {
+  const { pct, sections, next } = questCompleteness(readIntake());
+  document.getElementById('qringFg').setAttribute('stroke-dasharray', `${(pct / 100 * QC).toFixed(1)} ${QC.toFixed(1)}`);
+  document.getElementById('qringText').textContent = pct + '%';
+  document.getElementById('qpctNum').textContent = pct;
+  const nextEl = document.getElementById('qnext');
+  // The "Next: ..." sentence is built exactly as the golden tests lint it.
+  nextEl.textContent = next
+    ? `Next: add ${next.label} to unlock ${next.unlocks}.`
+    : 'Everything needed for the full picture is here.';
+  for (const s of sections) {
+    const chip = document.getElementById('chip-' + s.key);
+    if (!chip) continue;
+    chip.classList.toggle('added', s.done);
+    chip.textContent = s.done ? 'Added' : 'Unlocks ' + chip.dataset.unlocks;
+  }
+}
+
+// Recompute on any field edit (delegation on the form covers rows added later),
+// and after row add/remove re-renders, which happen on click (debounced).
+const questForm = document.getElementById('f');
+questForm.addEventListener('input', renderQuests);
+questForm.addEventListener('change', renderQuests);
+let questClickTimer = null;
+document.addEventListener('click', () => {
+  clearTimeout(questClickTimer);
+  questClickTimer = setTimeout(renderQuests, 150);
+});
+renderQuests();
 </script>
 </body>
 </html>
