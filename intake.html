@@ -49,6 +49,8 @@
     color: var(--sub); padding: 4px 6px; border-bottom: 1px solid var(--border-mid); }
   .rowtable td { padding: 4px 4px; }
   .rowtable input, .rowtable select { font-size: 12.5px; padding: 6px 8px; }
+  .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tablewrap .rowtable { min-width: 520px; }
   .btn { border: 1px solid var(--border); background: var(--surface); color: var(--sub); border-radius: 7px;
     font: inherit; font-size: 12px; font-weight: 600; padding: 6px 14px; cursor: pointer; }
   .btn.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-size: 13.5px; padding: 10px 22px; }
@@ -112,15 +114,14 @@
   </div>
 
   <div class="sample" style="border-left-color: var(--green)">
-    <div class="st"><b>Prefer an instant result?</b> Answer the same questions online and see a free
-    illustration immediately, generated in your browser: your Plan Health Score, key milestones and
-    what a full review would add. Nothing is sent or stored anywhere.</div>
-    <a class="btn primary" href="preview.html" rel="noopener">Get a free instant illustration</a>
+    <div class="st">These questions can also be answered online, with an illustration generated
+    immediately in your browser. Nothing is sent or stored anywhere.</div>
+    <a class="btn primary" href="preview.html" rel="noopener">Answer online instead</a>
   </div>
 
   <div class="sample">
-    <div class="st"><b>See what you get first.</b> Here is a full sample report, the lifetime cashflow
-    and tax modelling this produces, for an illustrative (fictional) household.</div>
+    <div class="st">A sample of the full report, the lifetime cashflow and tax modelling it produces,
+    for a fictional household.</div>
     <a class="btn primary" href="sample-report.html" target="_blank" rel="noopener">View a sample report</a>
   </div>
 
@@ -247,10 +248,10 @@
       <div class="s">By account type only. Please do not enter provider names, fund names or account numbers.</div>
       <div class="chip" id="chip-assets" data-unlocks="net worth and the security floor">Unlocks net worth and the security floor</div></div>
     <div class="bd">
-      <table class="rowtable" id="assets">
+      <div class="tablewrap"><table class="rowtable" id="assets">
         <thead><tr><th style="width:34%">Type</th><th style="width:22%">Whose</th><th>Current value</th><th>Adding per year</th><th></th></tr></thead>
         <tbody></tbody>
-      </table>
+      </table></div>
       <button type="button" class="btn" id="addAsset" style="margin-top:8px">+ Add a row</button>
       <label class="f" style="margin-top:10px"><span class="l">Anything that does not fit the table (business interests, inheritance expected, overseas assets, investment bonds, family investment company)</span>
         <textarea name="assetNotes"></textarea></label>
@@ -285,17 +286,17 @@
       <div class="chip" id="chip-family" data-unlocks="education, gifting and pay-change scenarios">Unlocks education, gifting and pay-change scenarios</div></div>
     <div class="bd">
       <div class="l" style="margin-bottom:4px">Children's education (one row per child; blank if none)</div>
-      <table class="rowtable" id="children">
+      <div class="tablewrap"><table class="rowtable" id="children">
         <thead><tr><th style="width:26%">Child (label)</th><th>Birth year</th><th>School fee / yr</th><th>University / yr</th><th></th></tr></thead>
         <tbody></tbody>
-      </table>
+      </table></div>
       <button type="button" class="btn" id="addChild" style="margin-top:8px">+ Add a child</button>
 
       <div class="l" style="margin:16px 0 4px">Planned gifts (e.g. a home deposit for a child; blank if none)</div>
-      <table class="rowtable" id="gifts">
+      <div class="tablewrap"><table class="rowtable" id="gifts">
         <thead><tr><th>Amount</th><th>Year</th><th style="width:40%">Note</th><th></th></tr></thead>
         <tbody></tbody>
-      </table>
+      </table></div>
       <button type="button" class="btn" id="addGift" style="margin-top:8px">+ Add a gift</button>
 
       <div class="grid3" style="margin-top:16px">
