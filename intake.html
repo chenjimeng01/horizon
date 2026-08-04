@@ -183,8 +183,8 @@
         <span><b>Passing wealth on</b><div class="d">Inheritance tax exposure, lifetime gifting with the seven-year rule, and what actually reaches your family.</div></span></label>
       <label class="goal"><input type="checkbox" name="goal" value="decumulation">
         <span><b>How to draw my money in retirement</b><div class="d">Comparing withdrawal orders, pension timing, and annuity options in pounds over your lifetime.</div></span></label>
-      <label class="f" style="margin-top:8px"><span class="l">In your own words, what does success look like?</span>
-        <textarea name="successText" placeholder="For example: retire at 60 on 4,000 a month, help each child with a deposit, never worry about a market crash"></textarea></label>
+      <label class="f" style="margin-top:8px"><span class="l">In your own words, what does success look like? Rough or undated plans are welcome.</span>
+        <textarea name="successText" placeholder="For example: retire at 60 on 4,000 a month; or we plan to have two children, probably private school and a US university, timing unknown, perhaps five years away"></textarea></label>
     </div>
   </div>
 
@@ -210,7 +210,7 @@
         <label class="f"><span class="l">Contact email</span><input type="email" name="email" required></label>
         <label class="f"><span class="l">Plan to what age? This is treated as the modelled age at death (default 100)</span><input type="number" name="endAge" placeholder="100" min="70" max="110"></label>
       </div>
-      <p class="note" style="margin-top:8px">State pensions: if you have BR19 forecasts, note the weekly amounts in section 7; otherwise we model the full new state pension and flag it as an assumption.</p>
+      <p class="note" style="margin-top:8px">State pensions are covered at the end of section 7. By default they are left out of the model; you can choose to include a forecast there.</p>
     </div>
   </div>
 
@@ -285,6 +285,7 @@
       <div class="s">The things you told us matter: educating and helping the children, and any expected change in pay or an inheritance. Amounts in today's money.</div>
       <div class="chip" id="chip-family" data-unlocks="education, gifting and pay-change scenarios">Unlocks education, gifting and pay-change scenarios</div></div>
     <div class="bd">
+      <p class="note" style="margin-bottom:12px">Plans without dates yet belong in the text boxes; the modelling turns them into scenarios with you.</p>
       <div class="l" style="margin-bottom:4px">Children's education (one row per child; blank if none)</div>
       <div class="tablewrap"><table class="rowtable" id="children">
         <thead><tr><th style="width:26%">Child (label)</th><th>Birth year</th><th>School fee / yr</th><th>University / yr</th><th></th></tr></thead>
@@ -317,12 +318,24 @@
     <div class="hd"><div class="t">7 · Pensions detail</div><div class="s">Still no provider names needed.</div>
       <div class="chip" id="chip-pensions" data-unlocks="the retirement forecast">Unlocks the retirement forecast</div></div>
     <div class="bd">
-      <div class="grid2">
-        <label class="f"><span class="l">Your state pension forecast (weekly, if known)</span><input type="number" name="c1sp" step="0.01" placeholder="241.30 if full"></label>
-        <label class="f"><span class="l">Partner's state pension forecast (weekly)</span><input type="number" name="c2sp" step="0.01"></label>
-      </div>
-      <label class="f" style="margin-top:10px"><span class="l">Anything unusual: missing NI years, protections, lifetime allowance history, old workplace schemes you have lost track of</span>
+      <label class="f"><span class="l">Anything unusual: missing NI years, protections, lifetime allowance history, old workplace schemes you have lost track of</span>
         <textarea name="pensionNotes"></textarea></label>
+      <!-- Quiet state-pension flow at the end of the section, small print. -->
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--divider)">
+        <label class="f" style="max-width:360px"><span class="l">Include the state pension in the model?</span>
+          <select name="spInclude" id="spInclude"><option value="no" selected>No</option><option value="yes">Yes</option></select></label>
+        <div id="spCheckedRow" class="hidden" style="margin-top:10px; max-width:360px">
+          <label class="f"><span class="l">Have you checked your state pension forecast?</span>
+            <select name="spChecked" id="spChecked"><option value="no" selected>No</option><option value="yes">Yes</option></select></label>
+          <p class="note" style="margin-top:4px">A state pension forecast is available from gov.uk.</p>
+        </div>
+        <div id="spAmountsRow" class="hidden" style="margin-top:10px">
+          <div class="grid2">
+            <label class="f"><span class="l">Your state pension forecast (weekly)</span><input type="number" name="c1sp" step="0.01" placeholder="241.30 if full"></label>
+            <label class="f"><span class="l">Partner's state pension forecast (weekly)</span><input type="number" name="c2sp" step="0.01"></label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -374,7 +387,7 @@
             <option value="heavy">Heavy (add deeper drawdown and spending-shock cases)</option>
           </select></label>
       </div>
-      <label class="f" style="margin-top:10px"><span class="l">Anything else we should know</span><textarea name="anythingElse"></textarea></label>
+      <label class="f" style="margin-top:10px"><span class="l">Anything else we should know, including plans that do not have dates yet</span><textarea name="anythingElse" placeholder="For example: we plan to have two children, probably private school and a US university, timing unknown, perhaps five years away"></textarea></label>
     </div>
   </div>
 
@@ -423,6 +436,20 @@ document.getElementById('goals').addEventListener('change', () => {
     document.getElementById(id).classList.toggle('hidden', !chosen.includes(goal));
   }
 });
+
+// Quiet state-pension flow: reveal the "checked?" question only when included,
+// and the weekly-amount inputs only when the forecast has been checked.
+const spInclude = document.getElementById('spInclude');
+const spChecked = document.getElementById('spChecked');
+function syncStatePension() {
+  const include = spInclude.value === 'yes';
+  document.getElementById('spCheckedRow').classList.toggle('hidden', !include);
+  const showAmounts = include && spChecked.value === 'yes';
+  document.getElementById('spAmountsRow').classList.toggle('hidden', !showAmounts);
+}
+spInclude.addEventListener('change', syncStatePension);
+spChecked.addEventListener('change', syncStatePension);
+syncStatePension();
 
 // Asset rows.
 const ASSET_TYPES = [
@@ -488,6 +515,13 @@ function readIntake() {
     return { type: g('type'), owner: g('owner'), value: Number(g('value') || 0), contribPerYear: Number(g('contrib') || 0) };
   }).filter(a => a.value > 0 || a.contribPerYear > 0);
 
+  // State pension: metadata always present; the per-client weekly amount is kept
+  // for backward compatibility and is null unless Q3 was reached (include yes AND
+  // forecast checked yes). The converter treats null/0 weekly as excluded.
+  const spInclude = v('spInclude') === 'yes';
+  const spChecked = spInclude ? (v('spChecked') === 'yes') : null;
+  const spWeekly = name => (spInclude && spChecked) ? num(name) : null;
+
   return {
     intakeVersion: 1,
     createdAt: new Date().toISOString(),
@@ -495,9 +529,9 @@ function readIntake() {
     successText: v('successText'),
     clients: [
       { name: v('c1name'), birthYear: num('c1birth'), taxCountry: v('c1country'),
-        salary: num('c1salary'), bonus: num('c1bonus'), retireAge: num('c1retire'), statePensionWeekly: num('c1sp') },
+        salary: num('c1salary'), bonus: num('c1bonus'), retireAge: num('c1retire'), statePensionWeekly: spWeekly('c1sp') },
       ...(v('c2name') ? [{ name: v('c2name'), birthYear: num('c2birth'), taxCountry: v('c2country'),
-        salary: num('c2salary'), bonus: num('c2bonus'), retireAge: num('c2retire'), statePensionWeekly: num('c2sp') }] : []),
+        salary: num('c2salary'), bonus: num('c2bonus'), retireAge: num('c2retire'), statePensionWeekly: spWeekly('c2sp') }] : []),
     ],
     email: v('email'),
     endAge: num('endAge') ?? 100,
@@ -518,6 +552,7 @@ function readIntake() {
     inheritance: num('inhAmount') ? { amount: num('inhAmount'), year: num('inhYear'), currency: v('inhCurrency') || 'GBP' } : null,
     promotion: (num('promoSalary') || num('promoBonus')) ? { newSalary: num('promoSalary') || 0, newBonus: num('promoBonus') || 0, year: num('promoYear') } : null,
     pensionNotes: v('pensionNotes'),
+    statePension: { include: spInclude, checked: spChecked },
     abroad: goals.includes('abroad') ? { where: v('abroadWhere'), year: num('abroadYear'), returnIntent: v('abroadReturn'), notes: v('abroadNotes') } : null,
     fi: goals.includes('fi_target') ? { income: num('fiIncome'), age: num('fiAge') } : null,
     validation: goals.includes('validation') ? { notes: v('validationNotes') } : null,
