@@ -275,6 +275,12 @@
         <label class="f"><span class="l">Years left on the term</span>
           <input type="number" name="mortTerm" placeholder="25"></label>
       </div>
+      <div class="grid2" style="margin-top:10px">
+        <label class="f"><span class="l">Year your current fixed rate ends</span>
+          <input type="number" name="mortFixEnd" placeholder="e.g. 2030"></label>
+        <label class="f"><span class="l">Expected rate after that (%)</span>
+          <input type="number" step="0.01" name="mortRateAfter" placeholder="5.5"></label>
+      </div>
       <label class="f" style="margin-top:10px"><span class="l">Any other debts: type, balance, rate, and when repaid (blank if none)</span>
         <textarea name="debts" placeholder="For example: car loan 15,000 at 6 percent, repaid 2029"></textarea></label>
     </div>
@@ -539,7 +545,7 @@ function readIntake() {
     spending: { now: num('spendNow'), retirement: num('spendRetire'), oneOffs: v('oneOffs') },
     assets,
     assetNotes: v('assetNotes'),
-    mortgage: num('mortBalance') ? { balance: num('mortBalance'), rate: num('mortRate') != null ? num('mortRate') / 100 : null, type: v('mortType') || 'repayment', termYears: num('mortTerm') } : null,
+    mortgage: num('mortBalance') ? { balance: num('mortBalance'), rate: num('mortRate') != null ? num('mortRate') / 100 : null, type: v('mortType') || 'repayment', termYears: num('mortTerm'), fixEndYear: num('mortFixEnd'), rateAfterFix: num('mortRateAfter') != null ? num('mortRateAfter') / 100 : null } : null,
     debts: v('debts'),
     children: [...childBody.querySelectorAll('tr')].map(tr => {
       const g = k => tr.querySelector(`[data-k=${k}]`).value;
