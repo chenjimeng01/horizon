@@ -198,12 +198,16 @@
           <label class="f" style="margin-top:8px"><span class="l">Year of birth</span><input type="number" name="c1birth" min="1930" max="2010" required></label>
           <label class="f" style="margin-top:8px"><span class="l">Income tax country</span>
             <select name="c1country"><option value="ruk">England / Wales / NI</option><option value="scotland">Scotland</option></select></label>
+          <label class="consent" style="margin-top:8px"><input type="checkbox" name="c1us">
+            <span>US citizen or green card holder</span></label>
         </div>
         <div>
           <label class="f"><span class="l">Partner's first name (blank if none)</span><input type="text" name="c2name"></label>
           <label class="f" style="margin-top:8px"><span class="l">Partner's year of birth</span><input type="number" name="c2birth" min="1930" max="2010"></label>
           <label class="f" style="margin-top:8px"><span class="l">Partner's income tax country</span>
             <select name="c2country"><option value="ruk">England / Wales / NI</option><option value="scotland">Scotland</option></select></label>
+          <label class="consent" style="margin-top:8px"><input type="checkbox" name="c2us">
+            <span>Partner is a US citizen or green card holder</span></label>
         </div>
       </div>
       <div class="grid2" style="margin-top:10px">
@@ -515,6 +519,7 @@ function readIntake() {
   const v = name => document.querySelector(`[name=${name}]`)?.value?.trim() ?? '';
   const num = name => { const x = v(name); return x === '' ? null : Number(x); };
   const goals = [...document.querySelectorAll('input[name=goal]:checked')].map(x => x.value);
+  const chk = name => !!document.querySelector(`[name=${name}]`)?.checked;
 
   const assets = [...tbody.querySelectorAll('tr')].map(tr => {
     const g = k => tr.querySelector(`[data-k=${k}]`).value;
@@ -534,9 +539,9 @@ function readIntake() {
     goals,
     successText: v('successText'),
     clients: [
-      { name: v('c1name'), birthYear: num('c1birth'), taxCountry: v('c1country'),
+      { name: v('c1name'), birthYear: num('c1birth'), taxCountry: v('c1country'), usPerson: chk('c1us'),
         salary: num('c1salary'), bonus: num('c1bonus'), retireAge: num('c1retire'), statePensionWeekly: spWeekly('c1sp') },
-      ...(v('c2name') ? [{ name: v('c2name'), birthYear: num('c2birth'), taxCountry: v('c2country'),
+      ...(v('c2name') ? [{ name: v('c2name'), birthYear: num('c2birth'), taxCountry: v('c2country'), usPerson: chk('c2us'),
         salary: num('c2salary'), bonus: num('c2bonus'), retireAge: num('c2retire'), statePensionWeekly: spWeekly('c2sp') }] : []),
     ],
     email: v('email'),
