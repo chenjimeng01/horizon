@@ -242,6 +242,11 @@
         <label class="f"><span class="l">Current household spending (per year, after tax)</span><input type="number" name="spendNow" min="0" step="1000"></label>
         <label class="f"><span class="l">Intended retirement spending (per year, today's money)</span><input type="number" name="spendRetire" min="0" step="1000"></label>
       </div>
+      <div class="grid2" style="margin-top:10px">
+        <label class="f"><span class="l">Of that, essential spending (housing, food, bills, healthcare)</span><input type="number" name="spendEssential" min="0" step="1000"></label>
+        <label class="f"><span class="l">Of that, discretionary spending (holidays, hobbies, gifts)</span><input type="number" name="spendDiscretionary" min="0" step="1000"></label>
+      </div>
+      <p style="font-size:12px;color:#5b6472;margin:8px 0 0">Optional. Splitting spending into essential and discretionary helps a later decumulation review show how much of the essentials guaranteed income covers.</p>
       <label class="f" style="margin-top:10px"><span class="l">One-off costs or gifts you expect (what, roughly when, how much)</span>
         <textarea name="oneOffs" placeholder="For example: help children with deposits 50,000 each around 2030; new kitchen 40,000 in 2027"></textarea></label>
     </div>
@@ -387,7 +392,7 @@
       <div class="grid2">
         <label class="f"><span class="l">Which return assumption should we centre on?</span>
           <select name="returns">
-            <option value="cautious">Cautious (about 2 percent above inflation)</option>
+            <option value="cautious">Cautious (about 1 percent above inflation)</option>
             <option value="balanced" selected>Balanced (about 3 percent above inflation)</option>
             <option value="growth">Growth-tilted (about 4 percent above inflation)</option>
           </select></label>
@@ -547,7 +552,7 @@ function readIntake() {
     email: v('email'),
     endAge: num('endAge') ?? 100,
     otherIncome: v('otherIncome'),
-    spending: { now: num('spendNow'), retirement: num('spendRetire'), oneOffs: v('oneOffs') },
+    spending: { now: num('spendNow'), retirement: num('spendRetire'), essential: num('spendEssential'), discretionary: num('spendDiscretionary'), oneOffs: v('oneOffs') },
     assets,
     assetNotes: v('assetNotes'),
     mortgage: num('mortBalance') ? { balance: num('mortBalance'), rate: num('mortRate') != null ? num('mortRate') / 100 : null, type: v('mortType') || 'repayment', termYears: num('mortTerm'), fixEndYear: num('mortFixEnd'), rateAfterFix: num('mortRateAfter') != null ? num('mortRateAfter') / 100 : null } : null,
